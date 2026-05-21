@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZOCHA 管理後台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal:   #4ECDC4;
+      --blue:   #0099CC;
+      --bg:     #FFFFFF;
+      --bg-alt: #F7F9FA;
+      --text:   #455A64;
+      --head:   #102A43;
+      --deep:   #2E3A59;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Noto Sans TC', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 232px;
+      background: var(--deep);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      left: 0; top: 0;
+      z-index: 100;
+    }
+    .sb-header {
+      padding: 28px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .sb-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+    }
+    .sb-tagline {
+      font-size: 11px;
+      color: rgba(255,255,255,.38);
+      margin-top: 4px;
+      letter-spacing: .5px;
+    }
+    .nav-wrap { padding: 20px 12px; flex:1; overflow-y: auto; }
+    .nav-section-label {
+      font-size: 10px;
+      color: rgba(255,255,255,.3);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 0 8px;
+      margin-bottom: 8px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      color: rgba(255,255,255,.6);
+      text-decoration: none;
+      font-size: 13.5px;
+      transition: all .18s;
+      margin-bottom: 2px;
+    }
+    .nav-item:hover { background: rgba(78,205,196,.14); color: var(--teal); }
+    .nav-item .icon { font-size: 16px; flex-shrink: 0; }
+    .sb-footer {
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      font-size: 10.5px;
+      color: rgba(255,255,255,.22);
+    }
+
+    /* ── Main ── */
+    .main {
+      margin-left: 232px;
+      flex: 1;
+      padding: 36px 44px;
+      max-width: 1200px;
+    }
+    .page-header { margin-bottom: 6px; }
+    .page-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--head);
+    }
+    .page-sub {
+      font-size: 13px;
+      color: var(--text);
+      margin-top: 5px;
+    }
+    .gradient-rule {
+      height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--blue));
+      border-radius: 2px;
+      margin: 22px 0 32px;
+    }
+
+    /* ── Stats strip ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .stat-card {
+      background: var(--bg-alt);
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .stat-val {
+      font-size: 26px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+    .stat-lbl { font-size: 12px; color: var(--text); margin-top: 4px; }
+
+    /* ── Dashboard cards ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--bg);
+      border-radius: 18px;
+      border: 1px solid #E4ECF0;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all .2s;
+    }
+    .card:hover {
+      box-shadow: 0 10px 36px rgba(0,153,204,.10);
+      border-color: var(--teal);
+      transform: translateY(-3px);
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--blue));
+    }
+    .card-icon {
+      width: 46px; height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(78,205,196,.12), rgba(0,153,204,.12));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: var(--head);
+      margin-bottom: 7px;
+    }
+    .card-desc {
+      font-size: 12.5px;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 18px;
+      min-height: 48px;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11.5px; padding: 3px 10px; border-radius: 20px;
+    }
+    .badge.ok  { background: #E8F5E9; color: #2E7D32; }
+    .badge.pending { background: #FFF8E1; color: #E65100; }
+    .last-upd { font-size: 11px; color: #B0BEC5; }
+    .btn {
+      display: block; text-align: center;
+      padding: 10px 20px; border-radius: 24px;
+      font-size: 13px; font-weight: 600;
+      text-decoration: none; transition: all .18s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      color: white;
+    }
+    .btn-primary:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-disabled {
+      background: #ECEFF1; color: #B0BEC5; cursor: default;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sb-header">
+    <div class="sb-logo">ZOCHA</div>
+    <div class="sb-tagline">管理後台系統</div>
+  </div>
+  <div class="nav-wrap">
+    <div class="nav-section-label">週報 / 月報</div>
+    <a href="shortage.html" class="nav-item" target="_blank">
+      <span class="icon">🚗</span>缺車分析週報
+    </a>
+    <a href="reviews.html" class="nav-item" target="_blank">
+      <span class="icon">⭐</span>客戶評論週報
+    </a>
+    <a href="news.html" class="nav-item" target="_blank">
+      <span class="icon">📰</span>時事新聞 & 標案
+    </a>
+    <a href="battery.html" class="nav-item" target="_blank">
+      <span class="icon">🔋</span>電池資費月報
+    </a>
+  </div>
+  <div class="sb-footer">ZOCHA Admin Portal v1.0</div>
+</nav>
+
+<!-- Main -->
+<main class="main">
+  <div class="page-header">
+    <h1 class="page-title">管理後台總覽</h1>
+    <p class="page-sub">整合缺車分析、客戶評論、時事標案、電池資費四大看板</p>
+  </div>
+  <div class="gradient-rule"></div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-val">4</div>
+      <div class="stat-lbl">整合看板數</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-avail">—</div>
+      <div class="stat-lbl">已發布看板</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-date">—</div>
+      <div class="stat-lbl">最近更新</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">🔒</div>
+      <div class="stat-lbl">存取受保護</div>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards-grid" id="grid"></div>
+</main>
+
+<script>
+const BOARDS = [
+  { id:'shortage', title:'缺車分析週報',     icon:'🚗', file:'shortage.html',
+    desc:'各站點缺車需求分析、機會損失排名、需求穩定性評估與車隊調度建議。' },
+  { id:'reviews',  title:'客戶系統評論週報', icon:'⭐', file:'reviews.html',
+    desc:'客戶評論彙整、評分趨勢分析、關鍵議題分類與服務改善建議。' },
+  { id:'news',     title:'時事新聞與標案週報',icon:'📰', file:'news.html',
+    desc:'機車產業時事新聞、PCC 政府採購標案雷達、Google Trends 熱搜追蹤。' },
+  { id:'battery',  title:'電池資費月報',     icon:'🔋', file:'battery.html',
+    desc:'Gogoro 電池超額分析、低用量降方案評估、門市資費管理總覽。' },
+];
+
+async function head(url) {
+  try { return (await fetch(url,{method:'HEAD'})).ok; } catch { return false; }
+}
+async function getStatus() {
+  try {
+    const r = await fetch('status.json?t='+Date.now());
+    return r.ok ? r.json() : {};
+  } catch { return {}; }
+}
+function fmtDate(iso) {
+  if (!iso) return null;
+  return new Date(iso).toLocaleString('zh-TW',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+async function init() {
+  const [status, ...exists] = await Promise.all([
+    getStatus(),
+    ...BOARDS.map(b => head(b.file))
+  ]);
+  const grid = document.getElementById('grid');
+  let avail = 0, latest = null;
+
+  BOARDS.forEach((b, i) => {
+    const ok = exists[i];
+    const updIso = status[b.id];
+    const updStr = fmtDate(updIso);
+    if (ok) avail++;
+    if (updIso && (!latest || updIso > latest)) latest = updIso;
+
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.innerHTML = `
+      <div class="card-icon">${b.icon}</div>
+      <div class="card-title">${b.title}</div>
+      <div class="card-desc">${b.desc}</div>
+      <div class="card-meta">
+        <span class="badge ${ok?'ok':'pending'}">${ok?'● 已發布':'○ 尚未發布'}</span>
+        <span class="last-upd">${updStr?'更新 '+updStr:'尚無資料'}</span>
+      </div>
+      ${ok
+        ? `<a href="${b.file}" target="_blank" class="btn btn-primary">查看看板 →</a>`
+        : `<span class="btn btn-disabled">等待發布</span>`}
+    `;
+    grid.appendChild(el);
+  });
+
+  document.getElementById('stat-avail').textContent = avail;
+  document.getElementById('stat-date').textContent = latest
+    ? new Date(latest).toLocaleDateString('zh-TW',{month:'short',day:'numeric'}) : '—';
+}
+init();
+</script>
+</body>
+</html>
