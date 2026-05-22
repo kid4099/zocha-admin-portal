@@ -144,6 +144,9 @@ body{font-family:"Noto Sans TC","Montserrat","Segoe UI","PingFang TC",sans-serif
 .trend-badge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;
              margin-left:4px;font-weight:600}
 .trend-up{color:var(--g)}.trend-dn{color:var(--r)}.trend-eq{color:var(--td)}
+.complaint-chart-wrap{margin-top:20px;padding:16px 20px;background:var(--s);border-radius:12px}
+.complaint-chart-title{font-size:13px;font-weight:600;color:var(--td);margin-bottom:12px}
+.complaint-chart-base{color:var(--r);font-weight:400;font-size:12px}
 .complaint-ok{color:var(--g);font-weight:700}
 .complaint-bad{color:var(--r);font-weight:700}
 .trend-summary{background:linear-gradient(135deg,rgba(78,205,196,.08),rgba(0,153,204,.06));
@@ -235,6 +238,7 @@ footer{text-align:center;padding:24px;color:var(--td);
   .sgrid,.lrgrid{grid-template-columns:1fr}
   .rd-label{width:70px}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 <header class="hdr">
@@ -250,9 +254,9 @@ footer{text-align:center;padding:24px;color:var(--td);
   <div class="sc"><div class="scn">22</div><div class="scl">非預設評論數</div></div>
   <div class="sc"><div class="scn">42</div><div class="scl">服務站點數</div></div>
   <div class="sc">
-    <div class="scn" style="-webkit-text-fill-color:var(--r)">5.73%</div>
+    <div class="scn" style="-webkit-text-fill-color:var(--g)">0.95%</div>
     <div class="scl">本週客訴率</div>
-    <div class="sc-sub">⚠ 超標 &nbsp; 基準 ≤ 2.0%</div>
+    <div class="sc-sub">✓ 達標 &nbsp; 基準 ≤ 2.0%</div>
   </div>
 </div>
 
@@ -312,6 +316,10 @@ footer{text-align:center;padding:24px;color:var(--td);
       <tbody id="wt"></tbody>
     </table>
   </div>
+  <div class="complaint-chart-wrap">
+    <div class="complaint-chart-title">客訴率趨勢　<span class="complaint-chart-base">基準線 2.0%</span></div>
+    <canvas id="complaintChart" height="90"></canvas>
+  </div>
 </div>
 
 <!-- ② 客戶真實留言 -->
@@ -324,10 +332,10 @@ footer{text-align:center;padding:24px;color:var(--td);
       全部 <span class="tab-cnt">22</span>
     </button>
     <button class="rev-tab neg" onclick="switchRevTab('negative',this)">
-      &#x1F534; 負面 / 有抱怨 <span class="tab-cnt">20</span>
+      &#x1F534; 負面 / 有抱怨 <span class="tab-cnt">0</span>
     </button>
     <button class="rev-tab pos" onclick="switchRevTab('positive',this)">
-      &#x1F7E2; 正面 / 滿意 <span class="tab-cnt">2</span>
+      &#x1F7E2; 正面 / 滿意 <span class="tab-cnt">22</span>
     </button>
   </div>
   <div class="lrgrid" id="lrg"></div>
@@ -415,24 +423,16 @@ footer{text-align:center;padding:24px;color:var(--td);
       <div class="ins-item ip">高評分標竿站點（avg ≥ 4.5，評論 ≥ 5 筆）：ZOCHA租機車-羅東前、ZOCHA-台東站前店，可作為服務標準範本。</div>
     </div>
   </div>
-  <div class="ins-panel ai-panel">
+  <div class="ins-panel ai-panel ai-error">
     <div class="ins-panel-hdr">
       <span class="ins-panel-icon">✦</span>
       <span class="ins-panel-title">Claude AI 深度分析</span>
-      <span class="ai-badge">AI 生成</span>
+      <span class="rule-badge">未啟用</span>
     </div>
-    <div class="trend-summary">📈 4週平均星等震盪於3.77~3.91★之間，本週回落至3.77★創四週低點，紅色警示站點倍增至2站；維護點檢與原廠問題構成負面評論主體，需立即強化車輛出租前檢驗標準與特定車型故障排查機制，否則恐觸發續降風險。</div><div class="ins-summary">本週負面評論佔比13.4%（27筆），較前週上升；維護點檢缺失與車輛原廠問題並列首要原因，Gogoro 3 Plus車型故障率偏高（3.64★），桃園後站與礁溪轉運站無人店管理滑落至紅色警示。</div>
-    <div class="ins-block">
-      <div class="ins-hdr ins-issue">⚠ AI 識別問題</div>
-      <div class="ins-item ii">EMD-6832、EMD-7166、EMD-8117等車輛存在熄火/無法前進問題，涉及Gogoro車型系統缺陷，需原廠檢測</div><div class="ins-item ii">EMH-2707客訴車廂無法開啟，客服下班無人應對導致訂單流失，無人店夜間服務能量嚴重不足</div><div class="ins-item ii">EMD-8095無預約通知、無車應對等待半小時，桃園後站無人店滿租應急流程失效</div><div class="ins-item ii">安全帽異味與頭套缺失（EMW-8292、EMX-0620）連續出現，無人店防潮與衛生管理機制缺陷</div><div class="ins-item ii">APP定位錯誤導致還車失敗（EMD-8097），高鐵站點定位演算法需優化</div>
-    </div>
-    <div class="ins-block" style="margin-top:14px">
-      <div class="ins-hdr ins-action">▶ AI 行動建議</div>
-      <div class="ins-item ia">48小時內：EMD-6832、EMD-7166、EMD-8117等故障車輛停租下架，Gogoro 3 Plus全車系檢修診斷並建立故障清單</div><div class="ins-item ia">本週內：桃園後站、礁溪轉運站無人店增設24小時線上客服值班機制，確保車廂故障可即時遠端指導</div><div class="ins-item ia">3天內：全店安全帽防潮箱升級，補充頭套存量，制定無人店每日下午衛生檢查清單</div><div class="ins-item ia">本週內：高鐵站點還車定位精度測試，APP測試團隊複驗EMD-8097相同場景</div><div class="ins-item ia">5個工作日：Gogoro 3 Plus評估是否應降低日租金或優先分配至優質站點以降低投訴</div>
-    </div>
-    <div class="ins-block" style="margin-top:14px">
-      <div class="ins-hdr ins-positive">✓ AI 正向亮點</div>
-      <div class="ins-item ip">Gogoro 2 Plus穩定表現3.75★，新迪爵車型4.19★評價最佳，證明車型品質把控有效</div><div class="ins-item ip">5星評論佔41.0%（98筆），客戶整體滿意度仍維持相對高位，便利性仍為主要優勢</div>
+    <div class="ai-err-box">
+      <div class="ai-err-icon">⚠</div>
+      <div class="ai-err-msg">尚未設定 ANTHROPIC_API_KEY。
+請至 GitHub → Settings → Secrets → Actions 新增此金鑰，下次執行即可啟用 AI 分析。</div>
     </div>
   </div>
   </div>
@@ -443,8 +443,8 @@ footer{text-align:center;padding:24px;color:var(--td);
   &nbsp;&#183;&nbsp; ZOCHA 租車服務品質監控系統
 </footer>
 <script>
-var S=[{"name": "ZOCHA-桃園後站無人店", "avg": 2.0, "count": 2, "color": "red", "flash": false}, {"name": "礁溪轉運站無人店", "avg": 2.5, "count": 2, "color": "red", "flash": false}, {"name": "ZOCHA-竹北站前無人店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA三創園區無人店(B2停車場)", "avg": 3.0, "count": 2, "color": "yellow", "flash": false}, {"name": "逢甲夜市-葆丞無人智慧租車", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "馥御花園酒店無人店", "avg": 3.0, "count": 2, "color": "yellow", "flash": false}, {"name": "彰化正楙店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA-竹南火車站前無人店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA-朝馬轉運站無人店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA-潮州站前無人店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA-台中站前店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "清水火車站-葆丞無人智慧租車", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA花蓮站前無人店", "avg": 3.14, "count": 7, "color": "yellow", "flash": false}, {"name": "ZOCHA-基隆站前無人店", "avg": 3.25, "count": 8, "color": "yellow", "flash": false}, {"name": "ZOCHA-宜蘭頭城無人店", "avg": 3.4, "count": 5, "color": "yellow", "flash": false}, {"name": "ZOCHA-嘉義高鐵無人店", "avg": 3.44, "count": 9, "color": "yellow", "flash": false}, {"name": "台南煙波大飯店", "avg": 3.47, "count": 17, "color": "yellow", "flash": false}, {"name": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "avg": 3.5, "count": 4, "color": "yellow", "flash": false}, {"name": "GoGoRent竹北高鐵無人自助取還站-智能租車", "avg": 3.64, "count": 14, "color": "yellow", "flash": false}, {"name": "ZOCHA-台南高鐵無人店", "avg": 3.65, "count": 26, "color": "yellow", "flash": false}, {"name": "ZOCHA-金門機場無人店", "avg": 3.67, "count": 3, "color": "yellow", "flash": false}, {"name": "ZOCHA-屏東站前無人店", "avg": 3.67, "count": 3, "color": "yellow", "flash": false}, {"name": "ZOCHA-斗六火車站前無人店", "avg": 3.67, "count": 3, "color": "yellow", "flash": false}, {"name": "ZOCHA-左營高鐵無人店", "avg": 3.71, "count": 28, "color": "yellow", "flash": false}, {"name": "ZOCHA-台中高鐵無人店", "avg": 3.93, "count": 15, "color": "yellow", "flash": false}, {"name": "ZOCHA-桃園高鐵無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "彰化田中高鐵站前無人店", "avg": 4.0, "count": 7, "color": "green", "flash": false}, {"name": "ZOCHA-蘇澳煙波大飯店無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA-台南善化無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA台中站前店-24小時無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA租機車-恆春轉運站無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA-高雄站前店", "avg": 4.07, "count": 15, "color": "green", "flash": false}, {"name": "豐原轉運站B2-葆丞無人智慧租車(豐原火車站24小時)", "avg": 4.1, "count": 10, "color": "green", "flash": false}, {"name": "ZOCHA租機車-新營站前無人店", "avg": 4.14, "count": 7, "color": "green", "flash": false}, {"name": "雲林虎尾高鐵無人店 ", "avg": 4.2, "count": 5, "color": "green", "flash": false}, {"name": "ZOCHA-沙鹿火車站無人店", "avg": 4.2, "count": 5, "color": "green", "flash": false}, {"name": "彰化員林火車站無人店", "avg": 4.5, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA租機車-羅東前站無人店", "avg": 4.67, "count": 6, "color": "green", "flash": false}, {"name": "ZOCHA-台東站前店", "avg": 4.75, "count": 8, "color": "green", "flash": false}, {"name": "台中后里奇典租車行", "avg": 5.0, "count": 4, "color": "green", "flash": false}, {"name": "ZOCHA高雄站前店-24小時", "avg": 5.0, "count": 1, "color": "green", "flash": false}, {"name": "ZOCHA- 花蓮煙波大飯店無人店", "avg": 5.0, "count": 1, "color": "green", "flash": false}];var V=[{"plate": "EMH-2707", "neg_hw": 1, "total": 1, "vqi": 100.0, "hw_keywords": ["車廂"], "comments": [{"rating": 1, "comment": "客服下班，打電話或是line都沒人可以幫忙解決，車廂一直打不開，用系統內的手動開啟車廂，也沒反應，搞了10分鐘，我放棄了！直接原地還車，完全沒使用到，請直接退還給我$100！謝謝", "store": "礁溪轉運站無人店"}]}, {"plate": "EMD-6826", "neg_hw": 1, "total": 1, "vqi": 100.0, "hw_keywords": ["煞車", "中柱"], "comments": [{"rating": 3, "comment": "我力氣不夠😂中柱立不起來，煞車有怪聲音，其他正常", "store": "ZOCHA租機車-恆春轉運站無人店"}]}, {"plate": "EMD-7166", "neg_hw": 1, "total": 3, "vqi": 33.3, "hw_keywords": ["熄火"], "comments": [{"rating": 2, "comment": "等紅綠燈時候車子會自動熄火", "store": "ZOCHA-台南高鐵無人店"}]}];var L=[{"rating": 1, "comment": "鏈條該上油了", "store": "ZOCHA-桃園後站無人店", "plate": "EMT-6019", "sentiment": "negative", "week_num": 4}, {"rating": 1, "comment": "沒騎到預定還車時間 結果錢還收一樣", "store": "ZOCHA-台南高鐵無人店", "plate": "EMV-8693", "sentiment": "negative", "week_num": 4}, {"rating": 1, "comment": "客服下班，打電話或是line都沒人可以幫忙解決，車廂一直打不開，用系統內的手動開啟車廂，也沒反應，搞了10分鐘，我放棄了！直接原地還車，完全沒使用到，請直接退還給我$100！謝謝", "store": "礁溪轉運站無人店", "plate": "EMH-2707", "sentiment": "negative", "week_num": 4}, {"rating": 1, "comment": "車子在等紅綠燈中間多次突然無法前進", "store": "ZOCHA-左營高鐵無人店", "plate": "EMD-6832", "sentiment": "negative", "week_num": 4}, {"rating": 1, "comment": "體驗太差了，不管是車輛，服務，地點的都非常差，一定不會再租基隆", "store": "ZOCHA-基隆站前無人店", "plate": "EMU-7973", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "這台機車好像有一點點問題，催油門的時候會ㄧ鈍ㄧ鈍的", "store": "ZOCHA-左營高鐵無人店", "plate": "NKN-8001", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "車子部份沒太多問題，但是第一次碰到還車定位錯誤不給還車，導致高鐵沒趕上...", "store": "ZOCHA-台中高鐵無人店", "plate": "EMD-8097", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "讚! 是一次好的租車體驗，APP很差", "store": "ZOCHA-嘉義高鐵無人店", "plate": "EMD-6809", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "等紅綠燈時候車子會自動熄火", "store": "ZOCHA-台南高鐵無人店", "plate": "EMD-7166", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "雖然及時幫我換但有需修理的車可以不要放在架上嗎…", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "plate": "ENA-1276", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "還好", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "plate": "EWR-1798", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "費用太貴，安全帽太臭", "store": "ZOCHA-基隆站前無人店", "plate": "EMW-8292", "sentiment": "negative", "week_num": 4}, {"rating": 3, "comment": "車子感應有時候不良 尚可", "store": "逢甲夜市-葆丞無人智慧租車", "plate": "EMS-2101", "sentiment": "negative", "week_num": 4}, {"rating": 3, "comment": "順利完成", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "plate": "EMD-6838", "sentiment": "negative", "week_num": 4}, {"rating": 3, "comment": "我力氣不夠😂中柱立不起來，煞車有怪聲音，其他正常", "store": "ZOCHA租機車-恆春轉運站無人店", "plate": "EMD-6826", "sentiment": "negative", "week_num": 4}, {"rating": 4, "comment": "讚! 是一次好的租車體驗\n租借的位子不明顯晚上還車的話蠻暗的，其他的部分都還可以很方便", "store": "ZOCHA-嘉義高鐵無人店", "plate": "EMD-6809", "sentiment": "negative", "week_num": 4}, {"rating": 4, "comment": "可能是前幾天下雨的關係 安全帽跟鑰匙證據袋都是濕的 異味很重", "store": "ZOCHA花蓮站前無人店", "plate": "EMX-0620", "sentiment": "negative", "week_num": 4}, {"rating": 4, "comment": "讚! 是一次好的租車體驗🐴🉐gogoro很難啟動", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "plate": "ENT-6586", "sentiment": "negative", "week_num": 4}, {"rating": 4, "comment": "讚! 是一次好的租車體驗\n客服親切！很幫忙！", "store": "礁溪轉運站無人店", "plate": "EMW-2055", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "讚! 又是一次好的租車體驗\n不過 NPR-9312這輛車差不多要換機油囉\n燈亮了 其餘部分都很好 謝謝", "store": "ZOCHA-左營高鐵無人店", "plate": "NPR-9312", "sentiment": "negative", "week_num": 4}, {"rating": 5, "comment": "這次車況很好", "store": "ZOCHA-台東站前店", "plate": "EMD-7170", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "建議可以先顯示車牌再讓客戶端進行拍照，多筆訂單會有搞混的情況～\n或是可以建議客人先拍照，再一次還！", "store": "ZOCHA租機車-羅東前站無人店", "plate": "EMD-8132", "sentiment": "negative", "week_num": 4}];var M=[{"model": "Gogoro 3 Plus", "avg": 3.64, "count": 14, "color": "yellow", "dist": {"1": 2, "2": 1, "3": 4, "4": 0, "5": 7}}, {"model": "Gogoro 2 Plus", "avg": 3.75, "count": 150, "color": "yellow", "dist": {"1": 4, "2": 6, "3": 72, "4": 10, "5": 58}}, {"model": "新迪爵", "avg": 4.19, "count": 26, "color": "green", "dist": {"1": 1, "2": 1, "3": 7, "4": 0, "5": 17}}];var W=[{"label": "04/20–04/26", "is_current": false, "avg_rating": 3.78, "total_reviews": 236, "total_orders": 387, "complaint_rate": 3.62, "complaint_count": 14, "red_stations": 1}, {"label": "04/27–05/03", "is_current": false, "avg_rating": 3.91, "total_reviews": 306, "total_orders": 510, "complaint_rate": 4.71, "complaint_count": 24, "red_stations": 1}, {"label": "05/04–05/10", "is_current": false, "avg_rating": 3.89, "total_reviews": 244, "total_orders": 445, "complaint_rate": 3.15, "complaint_count": 14, "red_stations": 0}, {"label": "05/11–05/17", "is_current": true, "avg_rating": 3.77, "total_reviews": 239, "total_orders": 419, "complaint_rate": 5.73, "complaint_count": 24, "red_stations": 2}];
-var CM=[{"cat": "車輛原廠問題", "counts": [2, 2, 1, 5], "pcts": [18.2, 10.0, 7.7, 25.0], "current_count": 5, "current_pct": 25.0, "reviews": [[{"plate": "EMD-7166", "store": "ZOCHA-台南高鐵無人店", "comment": "讚! 是一次好的租車體驗\n但是中間有停火一次，無法發動"}, {"plate": "EMD-8083", "store": "ZOCHA花蓮站前無人店", "comment": "讚! 是一次好的租車體驗\n不習慣電車"}], [{"plate": "EMD-6815", "store": "ZOCHA租機車-羅東前站無人店", "comment": "Gogoro沒辦法熄火"}, {"plate": "EQS-6615", "store": "彰化鹿港澄悅酒店", "comment": "車輛故障無法使用"}], [{"plate": "EPA-5033", "store": "ZOCHA-蘇澳煙波大飯店無人店", "comment": "無法發動"}], [{"plate": "EMD-6832", "store": "ZOCHA-左營高鐵無人店", "comment": "車子在等紅綠燈中間多次突然無法前進"}, {"plate": "NKN-8001", "store": "ZOCHA-左營高鐵無人店", "comment": "這台機車好像有一點點問題，催油門的時候會ㄧ鈍ㄧ鈍的"}, {"plate": "EMD-7166", "store": "ZOCHA-台南高鐵無人店", "comment": "等紅綠燈時候車子會自動熄火"}, {"plate": "EMS-2101", "store": "逢甲夜市-葆丞無人智慧租車", "comment": "車子感應有時候不良 尚可"}, {"plate": "ENT-6586", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "comment": "讚! 是一次好的租車體驗🐴🉐gogoro很難啟動"}]]}, {"cat": "APP／系統問題", "counts": [2, 3, 1, 4], "pcts": [18.2, 15.0, 7.7, 20.0], "current_count": 4, "current_pct": 20.0, "reviews": [[{"plate": "ENT-7731", "store": "ZOCHA-台中站前店", "comment": "沒有要保險強制加"}, {"plate": "NPR-9309", "store": "ZOCHA-台東站前店", "comment": "系統有點複雜"}], [{"plate": "EMR-7905", "store": "ZOCHA東港轉運站無人店", "comment": "過程複雜，且gogoro沒反應，沒時間研究，就只好先還車了"}, {"plate": "EMR-7868", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "comment": "租借系統非常糟糕。一直會卡，也不好找車，以後不會用"}, {"plate": "EMG-5197", "store": "ZOCHA-朝馬轉運站無人店", "comment": "不知道是不是給我重複扣款"}], [{"plate": "EWR-1798", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "comment": "雖然臨時租車，但是希望有車租，因回答不一所以我真的搞不清楚到底可不可以租。"}], [{"plate": "EMV-8693", "store": "ZOCHA-台南高鐵無人店", "comment": "沒騎到預定還車時間 結果錢還收一樣"}, {"plate": "EMD-8097", "store": "ZOCHA-台中高鐵無人店", "comment": "車子部份沒太多問題，但是第一次碰到還車定位錯誤不給還車，導致高鐵沒趕上..."}, {"plate": "EMD-6809", "store": "ZOCHA-嘉義高鐵無人店", "comment": "讚! 是一次好的租車體驗，APP很差"}, {"plate": "EMD-8132", "store": "ZOCHA租機車-羅東前站無人店", "comment": "建議可以先顯示車牌再讓客戶端進行拍照，多筆訂單會有搞混的情況～\n或是可以建議客人先拍照，再一次還！"}]]}, {"cat": "其他", "counts": [2, 2, 3, 4], "pcts": [18.2, 10.0, 23.1, 20.0], "current_count": 4, "current_pct": 20.0, "reviews": [[{"plate": "EMD-8083", "store": "ZOCHA花蓮站前無人店", "comment": "爛"}, {"plate": "ENG-7789", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "comment": "還不錯，就是貴了點"}], [{"plate": "ENT-3729", "store": "ZOCHA-沙鹿火車站無人店", "comment": "普通"}, {"plate": "MMC-9768", "store": "ZOCHA-台南高鐵無人店", "comment": "大致上都還不錯，唯一缺點就是不能甲地借乙地還，滿不方便的，高鐵站距離市區將近半小時車程，有點距離，希望能增設，甲借乙還，謝謝"}], [{"plate": "EMD-8117", "store": "ZOCHA-宜蘭頭城無人店", "comment": "不能甲租乙還有夠不未方便"}, {"plate": "EMD-8121", "store": "ZOCHA台中站前店-24小時無人店", "comment": "AAOA"}, {"plate": "EMD-7166", "store": "ZOCHA-台南高鐵無人店", "comment": "希望教學更明確"}], [{"plate": "EMU-7973", "store": "ZOCHA-基隆站前無人店", "comment": "體驗太差了，不管是車輛，服務，地點的都非常差，一定不會再租基隆"}, {"plate": "EWR-1798", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "comment": "還好"}, {"plate": "EMD-6838", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "comment": "順利完成"}, {"plate": "NPR-9312", "store": "ZOCHA-左營高鐵無人店", "comment": "讚! 又是一次好的租車體驗\n不過 NPR-9312這輛車差不多要換機油囉\n燈亮了 其餘部分都很好 謝謝"}]]}, {"cat": "維護點檢缺失", "counts": [4, 8, 4, 3], "pcts": [36.4, 40.0, 30.8, 15.0], "current_count": 3, "current_pct": 15.0, "reviews": [[{"plate": "EMD-8090", "store": "ZOCHA租機車-羅東前站無人店", "comment": "車況不佳，和蘇澳站車況差很多，帽子很臭"}, {"plate": "ERQ-8206", "store": "ZOCHA-左營高鐵無人店", "comment": "讚! 是一次好的租車體驗 ,租到的車煞車有點怪怪的"}, {"plate": "EMR-7905", "store": "ZOCHA東港轉運站無人店", "comment": "讚! 是一次好的租車體驗,但車子需要維護！"}, {"plate": "EMD-8129", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "comment": "車子鍊子有聲音 可能要稍微保養"}], [{"plate": "EMD-8081", "store": "ZOCHA-潮州站前無人店", "comment": "租車第一時間看到的是電池只剩兩個，在趕時間的狀況下還得繞遠路去換電池，明明標榜還車一定要還全新電池，不知道店家有沒有認真檢查，還是車子有問題…..反應問題，只得到隔了一天問「是否有無解決問題」的回答…"}, {"plate": "EMD-8116", "store": "ZOCHA-台東站前店", "comment": "車輛系統請記得更新喔！\n小電池沒電實在是令人感到恐慌，滿心期待的旅程成為不定時的炸彈，有點不知所措。幸好是發生在客服的上班時間，如果是客服時間，那麼這些難題就只能自己克服，實屬一次寂寞與焦慮交雜的體驗。如果還有機會，會喚起這段回憶，做好充足的準備。"}, {"plate": "EMP-1503", "store": "ZOCHA-台南轉運無人店", "comment": "車輛狀況很糟"}, {"plate": "NPR-9316", "store": "ZOCHA-左營高鐵無人店", "comment": "油沒加滿"}, {"plate": "EQR-2013", "store": "ZOCHA-台中高鐵無人店", "comment": "前一位還車沒換電"}, {"plate": "EMR-7868", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "comment": "讚! 是一次好的租車體驗\n車很爛"}, {"plate": "EMD-6828", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "comment": "租借到的車輛偏舊，不太好關車廂，其他都還不錯"}, {"plate": "MJF-6867", "store": "ZOCHA-台東站前店", "comment": "讚! 是一次好的租車體驗\n但是輪胎有點不夠氣，煞車不夠靈敏"}], [{"plate": "EMD-6838", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "comment": "讚! 是一次好的租車體驗\n車子太舊都沒有保養"}, {"plate": "EQB-3278", "store": "ZOCHA-桃園高鐵無人店", "comment": "電池超容易沒電，請多維護"}, {"plate": "NVE-7603", "store": "豐原轉運站B2-葆丞無人智慧租車(豐原火車站24小時)", "comment": "讚! 是一次好的租車體驗，機車若能不要震那麼厲害會更好，避震器還可以改進，我有加滿油哦～"}, {"plate": "MQA-0900", "store": "ZOCHA-金門機場無人店", "comment": "電池掉電偏快以外，沒什麼可以挑剔的"}], [{"plate": "EMT-6019", "store": "ZOCHA-桃園後站無人店", "comment": "鏈條該上油了"}, {"plate": "ENA-1276", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "comment": "雖然及時幫我換但有需修理的車可以不要放在架上嗎…"}, {"plate": "EMD-6826", "store": "ZOCHA租機車-恆春轉運站無人店", "comment": "我力氣不夠😂中柱立不起來，煞車有怪聲音，其他正常"}]]}, {"cat": "安全帽問題", "counts": [0, 0, 1, 2], "pcts": [0.0, 0.0, 7.7, 10.0], "current_count": 2, "current_pct": 10.0, "reviews": [[], [], [{"plate": "EMD-6826", "store": "ZOCHA租機車-恆春轉運站無人店", "comment": "讚! 是一次好的租車體驗，只是安全帽兩頂都沒有遮罩有點不便，租還真的都蠻便利！"}], [{"plate": "EMW-8292", "store": "ZOCHA-基隆站前無人店", "comment": "費用太貴，安全帽太臭"}, {"plate": "EMX-0620", "store": "ZOCHA花蓮站前無人店", "comment": "可能是前幾天下雨的關係 安全帽跟鑰匙證據袋都是濕的 異味很重"}]]}, {"cat": "無人站管理", "counts": [1, 1, 2, 1], "pcts": [9.1, 5.0, 15.4, 5.0], "current_count": 1, "current_pct": 5.0, "reviews": [[{"plate": "EQB-3278", "store": "ZOCHA-桃園高鐵無人店", "comment": "讚! ‘但是位置標錯是3號出口出來要右轉而不是左轉"}], [{"plate": "EMV-1573", "store": "ZOCHA-竹南火車站前無人店", "comment": "竹南停車場管理員態度不佳，牽車還車非常困難，停車場內車輛都隨意交叉橫豎亂停"}], [{"plate": "EMD-8095", "store": "ZOCHA-台南高鐵無人店", "comment": "已經預定Gogoro 3 plus 到當場沒車也沒通知打電話也沒人接等快半小時才有人處理 後續只說幫忙換成Gogoro2然後也沒其他表示"}, {"plate": "NPR-9316", "store": "ZOCHA-左營高鐵無人店", "comment": "還車時原本停放區域被停滿，看起來有一些私車停入固定停放區域內，已有聯繫真人客服，客服有請我先停放到下面區域，最後有順利完成還車程序。"}], [{"plate": "EMD-6809", "store": "ZOCHA-嘉義高鐵無人店", "comment": "讚! 是一次好的租車體驗\n租借的位子不明顯晚上還車的話蠻暗的，其他的部分都還可以很方便"}]]}, {"cat": "車廂／配件故障", "counts": [0, 2, 1, 1], "pcts": [0.0, 10.0, 7.7, 5.0], "current_count": 1, "current_pct": 5.0, "reviews": [[], [{"plate": "EMD-6821", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "comment": "讚! 是一次好的租車體驗\n手機支架有問題不能使用！！"}, {"plate": "EMV-8691", "store": "ZOCHA-台南高鐵無人店", "comment": "左側飛旋踏板不好打開"}], [{"plate": "EMS-1975", "store": "ZOCHA-台中高鐵無人店", "comment": "Go鍵不好用"}], [{"plate": "EMH-2707", "store": "礁溪轉運站無人店", "comment": "客服下班，打電話或是line都沒人可以幫忙解決，車廂一直打不開，用系統內的手動開啟車廂，也沒反應，搞了10分鐘，我放棄了！直接原地還車，完全沒使用到，請直接退還給我$100！謝謝"}]]}, {"cat": "等待與取車困難", "counts": [0, 2, 0, 0], "pcts": [0.0, 10.0, 0.0, 0.0], "current_count": 0, "current_pct": 0.0, "reviews": [[], [{"plate": "EMD-6809", "store": "ZOCHA-嘉義高鐵無人店", "comment": "流程算是順利\n但幾點可以更好\n建議都換3/4罩或全罩\n應該不少需求是高鐵到市區夏天會一直吃蚊子\n記得帶狗狗肉回去保養\n騎車聲音蠻大的\n希望未來嘉義地區有A點借B點還"}, {"plate": "EQB-3278", "store": "ZOCHA-桃園高鐵無人店", "comment": "車子找了好久才找到，此外手機支架也無法正常使用，車子前方的洞口還有積水及垃圾，若不是客服很有耐心協助回覆，不然應該給1星，這4顆星是給客服的讚美"}], [], []]}];var WL=["04/20–04/26", "04/27–05/03", "05/04–05/10", "05/11–05/17"];var WN=[11, 20, 13, 20];
+var S=[{"name": "ZOCHA-桃園後站無人店", "avg": 2.0, "count": 2, "color": "red", "flash": false}, {"name": "礁溪轉運站無人店", "avg": 2.5, "count": 2, "color": "red", "flash": false}, {"name": "ZOCHA-竹北站前無人店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA三創園區無人店(B2停車場)", "avg": 3.0, "count": 2, "color": "yellow", "flash": false}, {"name": "逢甲夜市-葆丞無人智慧租車", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "馥御花園酒店無人店", "avg": 3.0, "count": 2, "color": "yellow", "flash": false}, {"name": "彰化正楙店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA-竹南火車站前無人店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA-朝馬轉運站無人店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA-潮州站前無人店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA-台中站前店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "清水火車站-葆丞無人智慧租車", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "ZOCHA花蓮站前無人店", "avg": 3.14, "count": 7, "color": "yellow", "flash": false}, {"name": "ZOCHA-基隆站前無人店", "avg": 3.25, "count": 8, "color": "yellow", "flash": false}, {"name": "ZOCHA-宜蘭頭城無人店", "avg": 3.4, "count": 5, "color": "yellow", "flash": false}, {"name": "ZOCHA-嘉義高鐵無人店", "avg": 3.44, "count": 9, "color": "yellow", "flash": false}, {"name": "台南煙波大飯店", "avg": 3.47, "count": 17, "color": "yellow", "flash": false}, {"name": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "avg": 3.5, "count": 4, "color": "yellow", "flash": false}, {"name": "GoGoRent竹北高鐵無人自助取還站-智能租車", "avg": 3.64, "count": 14, "color": "yellow", "flash": false}, {"name": "ZOCHA-台南高鐵無人店", "avg": 3.65, "count": 26, "color": "yellow", "flash": false}, {"name": "ZOCHA-金門機場無人店", "avg": 3.67, "count": 3, "color": "yellow", "flash": false}, {"name": "ZOCHA-屏東站前無人店", "avg": 3.67, "count": 3, "color": "yellow", "flash": false}, {"name": "ZOCHA-斗六火車站前無人店", "avg": 3.67, "count": 3, "color": "yellow", "flash": false}, {"name": "ZOCHA-左營高鐵無人店", "avg": 3.71, "count": 28, "color": "yellow", "flash": false}, {"name": "ZOCHA-台中高鐵無人店", "avg": 3.93, "count": 15, "color": "yellow", "flash": false}, {"name": "ZOCHA-桃園高鐵無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "彰化田中高鐵站前無人店", "avg": 4.0, "count": 7, "color": "green", "flash": false}, {"name": "ZOCHA-蘇澳煙波大飯店無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA-台南善化無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA台中站前店-24小時無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA租機車-恆春轉運站無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA-高雄站前店", "avg": 4.07, "count": 15, "color": "green", "flash": false}, {"name": "豐原轉運站B2-葆丞無人智慧租車(豐原火車站24小時)", "avg": 4.1, "count": 10, "color": "green", "flash": false}, {"name": "ZOCHA租機車-新營站前無人店", "avg": 4.14, "count": 7, "color": "green", "flash": false}, {"name": "雲林虎尾高鐵無人店 ", "avg": 4.2, "count": 5, "color": "green", "flash": false}, {"name": "ZOCHA-沙鹿火車站無人店", "avg": 4.2, "count": 5, "color": "green", "flash": false}, {"name": "彰化員林火車站無人店", "avg": 4.5, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA租機車-羅東前站無人店", "avg": 4.67, "count": 6, "color": "green", "flash": false}, {"name": "ZOCHA-台東站前店", "avg": 4.75, "count": 8, "color": "green", "flash": false}, {"name": "台中后里奇典租車行", "avg": 5.0, "count": 4, "color": "green", "flash": false}, {"name": "ZOCHA高雄站前店-24小時", "avg": 5.0, "count": 1, "color": "green", "flash": false}, {"name": "ZOCHA- 花蓮煙波大飯店無人店", "avg": 5.0, "count": 1, "color": "green", "flash": false}];var V=[{"plate": "EMH-2707", "neg_hw": 1, "total": 1, "vqi": 100.0, "hw_keywords": ["車廂"], "comments": [{"rating": 1, "comment": "客服下班，打電話或是line都沒人可以幫忙解決，車廂一直打不開，用系統內的手動開啟車廂，也沒反應，搞了10分鐘，我放棄了！直接原地還車，完全沒使用到，請直接退還給我$100！謝謝", "store": "礁溪轉運站無人店"}]}, {"plate": "EMD-6826", "neg_hw": 1, "total": 1, "vqi": 100.0, "hw_keywords": ["煞車", "中柱"], "comments": [{"rating": 3, "comment": "我力氣不夠😂中柱立不起來，煞車有怪聲音，其他正常", "store": "ZOCHA租機車-恆春轉運站無人店"}]}, {"plate": "EMD-7166", "neg_hw": 1, "total": 3, "vqi": 33.3, "hw_keywords": ["熄火"], "comments": [{"rating": 2, "comment": "等紅綠燈時候車子會自動熄火", "store": "ZOCHA-台南高鐵無人店"}]}];var L=[{"rating": 1, "comment": "鏈條該上油了", "store": "ZOCHA-桃園後站無人店", "plate": "EMT-6019", "sentiment": "positive", "week_num": 4}, {"rating": 1, "comment": "沒騎到預定還車時間 結果錢還收一樣", "store": "ZOCHA-台南高鐵無人店", "plate": "EMV-8693", "sentiment": "positive", "week_num": 4}, {"rating": 1, "comment": "客服下班，打電話或是line都沒人可以幫忙解決，車廂一直打不開，用系統內的手動開啟車廂，也沒反應，搞了10分鐘，我放棄了！直接原地還車，完全沒使用到，請直接退還給我$100！謝謝", "store": "礁溪轉運站無人店", "plate": "EMH-2707", "sentiment": "positive", "week_num": 4}, {"rating": 1, "comment": "車子在等紅綠燈中間多次突然無法前進", "store": "ZOCHA-左營高鐵無人店", "plate": "EMD-6832", "sentiment": "positive", "week_num": 4}, {"rating": 1, "comment": "體驗太差了，不管是車輛，服務，地點的都非常差，一定不會再租基隆", "store": "ZOCHA-基隆站前無人店", "plate": "EMU-7973", "sentiment": "positive", "week_num": 4}, {"rating": 2, "comment": "這台機車好像有一點點問題，催油門的時候會ㄧ鈍ㄧ鈍的", "store": "ZOCHA-左營高鐵無人店", "plate": "NKN-8001", "sentiment": "positive", "week_num": 4}, {"rating": 2, "comment": "車子部份沒太多問題，但是第一次碰到還車定位錯誤不給還車，導致高鐵沒趕上...", "store": "ZOCHA-台中高鐵無人店", "plate": "EMD-8097", "sentiment": "positive", "week_num": 4}, {"rating": 2, "comment": "讚! 是一次好的租車體驗，APP很差", "store": "ZOCHA-嘉義高鐵無人店", "plate": "EMD-6809", "sentiment": "positive", "week_num": 4}, {"rating": 2, "comment": "等紅綠燈時候車子會自動熄火", "store": "ZOCHA-台南高鐵無人店", "plate": "EMD-7166", "sentiment": "positive", "week_num": 4}, {"rating": 2, "comment": "雖然及時幫我換但有需修理的車可以不要放在架上嗎…", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "plate": "ENA-1276", "sentiment": "positive", "week_num": 4}, {"rating": 2, "comment": "還好", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "plate": "EWR-1798", "sentiment": "positive", "week_num": 4}, {"rating": 2, "comment": "費用太貴，安全帽太臭", "store": "ZOCHA-基隆站前無人店", "plate": "EMW-8292", "sentiment": "positive", "week_num": 4}, {"rating": 3, "comment": "車子感應有時候不良 尚可", "store": "逢甲夜市-葆丞無人智慧租車", "plate": "EMS-2101", "sentiment": "positive", "week_num": 4}, {"rating": 3, "comment": "順利完成", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "plate": "EMD-6838", "sentiment": "positive", "week_num": 4}, {"rating": 3, "comment": "我力氣不夠😂中柱立不起來，煞車有怪聲音，其他正常", "store": "ZOCHA租機車-恆春轉運站無人店", "plate": "EMD-6826", "sentiment": "positive", "week_num": 4}, {"rating": 4, "comment": "讚! 是一次好的租車體驗\n租借的位子不明顯晚上還車的話蠻暗的，其他的部分都還可以很方便", "store": "ZOCHA-嘉義高鐵無人店", "plate": "EMD-6809", "sentiment": "positive", "week_num": 4}, {"rating": 4, "comment": "可能是前幾天下雨的關係 安全帽跟鑰匙證據袋都是濕的 異味很重", "store": "ZOCHA花蓮站前無人店", "plate": "EMX-0620", "sentiment": "positive", "week_num": 4}, {"rating": 4, "comment": "讚! 是一次好的租車體驗🐴🉐gogoro很難啟動", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "plate": "ENT-6586", "sentiment": "positive", "week_num": 4}, {"rating": 4, "comment": "讚! 是一次好的租車體驗\n客服親切！很幫忙！", "store": "礁溪轉運站無人店", "plate": "EMW-2055", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "讚! 又是一次好的租車體驗\n不過 NPR-9312這輛車差不多要換機油囉\n燈亮了 其餘部分都很好 謝謝", "store": "ZOCHA-左營高鐵無人店", "plate": "NPR-9312", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "這次車況很好", "store": "ZOCHA-台東站前店", "plate": "EMD-7170", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "建議可以先顯示車牌再讓客戶端進行拍照，多筆訂單會有搞混的情況～\n或是可以建議客人先拍照，再一次還！", "store": "ZOCHA租機車-羅東前站無人店", "plate": "EMD-8132", "sentiment": "positive", "week_num": 4}];var M=[{"model": "Gogoro 3 Plus", "avg": 3.64, "count": 14, "color": "yellow", "dist": {"1": 2, "2": 1, "3": 4, "4": 0, "5": 7}}, {"model": "Gogoro 2 Plus", "avg": 3.75, "count": 150, "color": "yellow", "dist": {"1": 4, "2": 6, "3": 72, "4": 10, "5": 58}}, {"model": "新迪爵", "avg": 4.19, "count": 26, "color": "green", "dist": {"1": 1, "2": 1, "3": 7, "4": 0, "5": 17}}];var W=[{"label": "04/20–04/26", "is_current": false, "avg_rating": 3.78, "total_reviews": 236, "total_orders": 389, "complaint_rate": 1.54, "complaint_count": 6, "red_stations": 1}, {"label": "04/27–05/03", "is_current": false, "avg_rating": 3.91, "total_reviews": 306, "total_orders": 510, "complaint_rate": 2.75, "complaint_count": 14, "red_stations": 1}, {"label": "05/04–05/10", "is_current": false, "avg_rating": 3.89, "total_reviews": 244, "total_orders": 446, "complaint_rate": 1.12, "complaint_count": 5, "red_stations": 0}, {"label": "05/11–05/17", "is_current": true, "avg_rating": 3.77, "total_reviews": 239, "total_orders": 419, "complaint_rate": 0.95, "complaint_count": 4, "red_stations": 2}];
+var CM=[];var WL=["04/20–04/26", "04/27–05/03", "05/04–05/10", "05/11–05/17"];var WN=[6, 14, 5, 4];
 
 /* Sec2: Review tabs */
 var _rtab='all';
@@ -551,15 +551,14 @@ function rM(){
 }
 rM();
 
-/* Trend table */
+/* Trend table (complaint_rate moved to chart below) */
 function rW(){
   var tb=document.getElementById('wt');if(!tb)return;
   var metrics=[
-    {key:'avg_rating',    label:'平均星等',   fmt:function(v){return v.toFixed(2)+'★';}, hi:true},
-    {key:'complaint_rate',label:'客訴率',      fmt:function(v){return v.toFixed(1)+'%';}, hi:false, threshold:2.0},
-    {key:'total_orders',  label:'完成訂單',   fmt:function(v){return v.toLocaleString()+'單';}, hi:true},
+    {key:'avg_rating',     label:'平均星等',   fmt:function(v){return v.toFixed(2)+'★';}, hi:true},
+    {key:'total_orders',   label:'完成訂單',   fmt:function(v){return v.toLocaleString()+'單';}, hi:true},
     {key:'complaint_count',label:'客訴事件',   fmt:function(v){return v+'件';}, hi:false},
-    {key:'red_stations',  label:'紅色警示站', fmt:function(v){return v+'站';}, hi:false},
+    {key:'red_stations',   label:'紅色警示站', fmt:function(v){return v+'站';}, hi:false},
   ];
   metrics.forEach(function(m){
     var tr=document.createElement('tr');
@@ -569,7 +568,6 @@ function rW(){
       if(w.is_current)td.className='cur';
       var v=w[m.key];
       var txt=m.fmt(v);
-      // Trend arrow vs previous week
       var arrow='';
       if(i>0){
         var prev=W[i-1][m.key];
@@ -577,19 +575,86 @@ function rW(){
         else if(v<prev)arrow=m.hi?'<span class="trend-dn">▼</span>':'<span class="trend-up">▼</span>';
         else arrow='<span class="trend-eq">→</span>';
       }
-      // Complaint rate coloring
-      if(m.key==='complaint_rate'){
-        var cls=v>2?'complaint-bad':'complaint-ok';
-        td.innerHTML='<span class="'+cls+'">'+txt+'</span>'+arrow;
-      } else {
-        td.innerHTML=txt+arrow;
-      }
+      td.innerHTML=txt+arrow;
       tr.appendChild(td);
     });
     tb.appendChild(tr);
   });
 }
 rW();
+
+/* Complaint rate line chart */
+function rComplaintChart(){
+  var canvas=document.getElementById('complaintChart');
+  if(!canvas||typeof Chart==='undefined')return;
+  var labels=W.map(function(w){return w.label;});
+  var rates=W.map(function(w){return parseFloat(w.complaint_rate)||0;});
+  var pointColors=rates.map(function(v){return v>2?'#EF5350':'#4ECDC4';});
+  var pointRadius=rates.map(function(v,i){return W[i].is_current?7:5;});
+  new Chart(canvas,{
+    type:'line',
+    data:{
+      labels:labels,
+      datasets:[
+        {
+          label:'客訴率',
+          data:rates,
+          borderColor:'#0099CC',
+          backgroundColor:'rgba(0,153,204,0.08)',
+          borderWidth:2.5,
+          pointBackgroundColor:pointColors,
+          pointBorderColor:pointColors,
+          pointRadius:pointRadius,
+          pointHoverRadius:8,
+          fill:true,
+          tension:0.35,
+        },
+        {
+          label:'基準線 2.0%',
+          data:labels.map(function(){return 2.0;}),
+          borderColor:'#EF5350',
+          borderWidth:1.5,
+          borderDash:[6,4],
+          pointRadius:0,
+          fill:false,
+          tension:0,
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{
+          position:'top',
+          align:'end',
+          labels:{boxWidth:12,font:{size:12},color:'#455A64'}
+        },
+        tooltip:{
+          callbacks:{
+            label:function(ctx){
+              if(ctx.datasetIndex===1)return '基準線: 2.0%';
+              var w=W[ctx.dataIndex];
+              return '客訴率: '+ctx.parsed.y.toFixed(1)+'%  ('+w.complaint_count+'件 / '+w.total_orders+'單)';
+            }
+          }
+        }
+      },
+      scales:{
+        y:{
+          beginAtZero:true,
+          suggestedMax:Math.max.apply(null,rates.concat([3]))+1,
+          ticks:{callback:function(v){return v.toFixed(1)+'%';},font:{size:11},color:'#455A64'},
+          grid:{color:'rgba(0,0,0,0.05)'}
+        },
+        x:{
+          ticks:{font:{size:11},color:'#455A64'},
+          grid:{display:false}
+        }
+      }
+    }
+  });
+}
+rComplaintChart();
 
 /* Complaint Category Matrix */
 function toggleCat(el){el.classList.toggle('open');}
