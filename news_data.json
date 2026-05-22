@@ -1,0 +1,46 @@
+{
+  "date": "2026-05-22",
+  "categories": {
+    "travel": [
+      {"title": "2026觀光署最新旅遊補助！符合資格「每人可領3200元」，5筆錢發放時間金額、加碼縣市一次看", "url": "https://www.storm.mg/lifestyle/11132778", "source": "風傳媒", "time": "1 day ago"},
+      {"title": "旅遊推薦清單》七款觀光列車帶你優雅遊台灣", "url": "https://club.commonhealth.com.tw/article/4614", "source": "大人社團", "time": "2 days ago"},
+      {"title": "3大連假、會展、演唱會帶動 觀光飯店業Q2淡季不淡", "url": "https://stock.ltn.com.tw/article/z3hgg1aqxcpb", "source": "自由財經", "time": "5 days ago"},
+      {"title": "2026旅遊補助不斷更新！台東最高補助4.5萬、中央國旅補助有望上看3200元", "url": "https://dailyview.tw/popular/detail/33365", "source": "DailyView", "time": "6 days ago"},
+      {"title": "台北新酒店20間推介人均$165！近台北車站／家庭房／日式大浴場", "url": "https://www.hk01.com/", "source": "HK01", "time": "2 days ago"}
+    ],
+    "subsidy": [
+      {"title": "2026國旅補助變「抽籤制」，壽星＋連住最高爽領$3,200！快看怎麼登記", "url": "https://www.womenshealthmag.com/tw/money/bread-and-butter/g71368615/taiwan-travel-subsidy-2026/", "source": "Women's Health", "time": "16 hours ago"},
+      {"title": "交通部觀光署再赴大馬，雙城接力行銷台灣觀光，聯手人氣網紅引爆多樣主題熱度", "url": "https://www.taiwan.net.tw/m1.aspx?sNo=0044410", "source": "交通部觀光署", "time": "1 day ago"},
+      {"title": "交通部觀光署再赴大馬行銷台灣 雙城接力搶攻旅遊商機、網紅助攻掀熱潮", "url": "https://www.yesmedia.com.tw/", "source": "YES媒體", "time": "1 day ago"},
+      {"title": "台灣區觀光協會拜會交通部觀光署 聚焦國旅升級、智慧觀光與深度文化體驗", "url": "https://money.udn.com/money/story/11799/9504721", "source": "經濟日報", "time": "6 days ago"},
+      {"title": "海線風情席捲登場！「大玩台中館」前進高雄旅展展現台中觀光魅力", "url": "https://www.tourism.taichung.gov.tw/3279457/post", "source": "台中市觀光旅遊局", "time": "6 days ago"}
+    ],
+    "motorcycle": [
+      {"title": "租機車不還賴給「假朋友」？ 台東男遭判刑3個月", "url": "https://www.chinatimes.com/realtimenews/20260521003822-260402", "source": "中時新聞網", "time": "15 hours ago"},
+      {"title": "淡江大橋機車族違停拍照亂象頻生！淡水、蘆洲警鎖定開罰", "url": "https://www.msn.com/zh-tw/news/national/ar-AA23nO8s", "source": "MSN新聞", "time": "4 days ago"},
+      {"title": "淡江大橋機車道惹怒機車族 李四川：當選市長一定要求中央改善", "url": "https://udn.com/news/story/124652/9507273", "source": "聯合新聞網", "time": "5 days ago"},
+      {"title": "「汽車」停車場鋪碎石 機車族硬闖打滑還罵「太危險」", "url": "https://today.line.me/tw", "source": "LINE TODAY", "time": "4 days ago"},
+      {"title": "汽機車駕照最新財經新聞", "url": "https://www.wantgoo.com/news/tag/", "source": "玩股網", "time": "3 days ago"}
+    ],
+    "arts": [
+      {"title": "2026演唱會全攻略！演唱會時間表、搶票資訊、票價總整理（持續更新）", "url": "https://www.businessweekly.com.tw/style/blog/3019879", "source": "商業周刊", "time": "2 days ago"},
+      {"title": "2026演唱會資訊售票日期一次看！盧廣仲、五月天、邱鋒澤、趙傳、EXID…（持續更新）", "url": "https://tw.news.yahoo.com/", "source": "Yahoo新聞", "time": "2 days ago"},
+      {"title": "2026光球音樂祭：與法國指標音樂祭Nuits Sonores共同打造電音盛典", "url": "https://www.vogue.com.tw/article/2026-glowball-festival", "source": "Vogue Taiwan", "time": "6 days ago"},
+      {"title": "5/16-5/17週末活動推薦！全台市集、音樂節懶人包：時間地點與必逛亮點一次看", "url": "https://www.harpersbazaar.com/tw/life/trips/a71300469/", "source": "Harper's Bazaar", "time": "6 days ago"},
+      {"title": "歌單 / 中島美嘉 2026 台灣演唱會", "url": "https://memeon-music.com/2026/05/16/mika-nakashima-12/", "source": "迷迷音", "time": "5 days ago"}
+    ],
+    "brand": []
+  },
+  "trends": [
+    {"rank": 1,  "keyword": "knicks vs cavaliers", "volume": 10000, "tag": "spo"},
+    {"rank": 2,  "keyword": "尼克 對 騎士",       "volume": 2000,  "tag": "spo"},
+    {"rank": 3,  "keyword": "鄭麗文",             "volume": 500,   "tag": "pol"},
+    {"rank": 4,  "keyword": "今周刊",             "volume": 500,   "tag": "fin"},
+    {"rank": 5,  "keyword": "stella mcamis",      "volume": 200,   "tag": "cel"},
+    {"rank": 6,  "keyword": "道瓊",               "volume": 200,   "tag": "fin"},
+    {"rank": 7,  "keyword": "sndk",               "volume": 200,   "tag": "fin"},
+    {"rank": 8,  "keyword": "五月天演唱會",        "volume": 100,   "tag": "cel"},
+    {"rank": 9,  "keyword": "playstation",        "volume": 100,   "tag": "tec"},
+    {"rank": 10, "keyword": "債券市場",            "volume": 100,   "tag": "fin"}
+  ]
+}
