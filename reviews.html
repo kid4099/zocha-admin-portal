@@ -1,39 +1,635 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <title>ZOCHA — 客戶系統評論週報</title>
-  <style>
-    body {
-      margin: 0; font-family: 'Noto Sans TC', sans-serif;
-      background: #F7F9FA; display: flex;
-      align-items: center; justify-content: center;
-      min-height: 100vh; color: #455A64;
-    }
-    .box {
-      text-align: center; padding: 60px 40px;
-      background: white; border-radius: 20px;
-      border: 1px solid #E4ECF0;
-      box-shadow: 0 4px 24px rgba(0,153,204,.06);
-    }
-    .icon { font-size: 52px; margin-bottom: 20px; }
-    h2 { color: #102A43; font-size: 22px; margin-bottom: 10px; }
-    p { font-size: 14px; line-height: 1.7; max-width: 320px; }
-    a {
-      display: inline-block; margin-top: 24px;
-      padding: 10px 28px; border-radius: 24px;
-      background: linear-gradient(135deg, #4ECDC4, #0099CC);
-      color: white; text-decoration: none;
-      font-size: 13px; font-weight: 600;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系統客戶評論看板</title>
+<style>
+:root{--bg:#FFFFFF;--s:#F7F9FA;--b:#E0E7EF;--t:#102A43;--td:#455A64;
+      --g:#4ECDC4;--y:#F9A825;--r:#EF5350;--bl:#0099CC;--o:#FF9100;
+      --sf:#EF5350;--cl:#0099CC;--pr:#4ECDC4}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans TC","Montserrat","Segoe UI","PingFang TC",sans-serif;
+     background:var(--bg);color:var(--t);min-height:100vh;line-height:1.6}
+/* Header */
+.hdr{background:linear-gradient(135deg,#4ECDC4 0%,#0099CC 100%);
+     padding:28px 40px;display:flex;align-items:center;
+     justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hdr h1{font-size:26px;font-weight:700;color:#fff;letter-spacing:1.5px}
+.sub{color:rgba(255,255,255,.8);font-size:13px;margin-top:4px}
+.dbadge{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);
+        border-radius:20px;padding:8px 18px;font-size:13px;color:#fff;backdrop-filter:blur(4px)}
+.dbadge span{color:rgba(255,255,255,.75)}
+/* KPI strip */
+.srow{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;
+      padding:24px 40px;background:var(--s);border-bottom:1px solid var(--b)}
+.sc{background:#fff;border:1px solid var(--b);border-radius:16px;
+    padding:20px 24px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.scn{font-size:36px;font-weight:700;line-height:1;margin-bottom:6px;
+     background:linear-gradient(135deg,#4ECDC4,#0099CC);
+     -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.scl{font-size:12px;color:var(--td);text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
+/* Section wrapper */
+.sec{padding:28px 40px;border-bottom:1px solid var(--b)}
+.sh{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.snum{width:30px;height:30px;border-radius:50%;
+      background:linear-gradient(135deg,#4ECDC4,#0099CC);
+      display:flex;align-items:center;justify-content:center;
+      font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.stit{font-size:18px;font-weight:700;color:var(--t)}
+.stit small{font-size:12px;color:var(--td);font-weight:400;margin-left:8px}
+/* Sec1: Rating distribution */
+.rd-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.rd-label{width:130px;font-size:13px;color:var(--td);flex-shrink:0;white-space:nowrap}
+.rd-bar-wrap{flex:1;height:22px;background:var(--s);border-radius:11px;overflow:hidden;border:1px solid var(--b)}
+.rd-bar{height:100%;border-radius:11px;transition:width .5s}
+.rd-cnt{width:100px;text-align:right;font-size:14px;font-weight:700;color:var(--t);flex-shrink:0;white-space:nowrap}
+.rd-pct{font-size:11px;font-weight:400;color:var(--td)}
+/* Sec2: Review tabs */
+.rev-tabs{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.rev-tab{padding:8px 20px;border-radius:20px;border:1px solid var(--b);
+         background:#fff;color:var(--td);cursor:pointer;font-size:13px;
+         transition:all .2s;font-weight:500;display:flex;align-items:center;gap:6px}
+.rev-tab .tab-cnt{font-size:11px;padding:1px 7px;border-radius:10px;
+                  background:rgba(0,0,0,.07)}
+.rev-tab.active.neg{background:rgba(239,83,80,.08);border-color:var(--r);color:var(--r)}
+.rev-tab.active.pos{background:rgba(78,205,196,.08);border-color:var(--g);color:#2E8B6E}
+.rev-tab.active.all{background:rgba(0,153,204,.08);border-color:var(--bl);color:var(--bl)}
+/* Sec2: Low-rating review cards */
+.lrgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.lrcard{background:#fff;border:1px solid var(--b);border-radius:14px;
+        padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);border-left:4px solid var(--r)}
+.lrcard.r2{border-left-color:var(--o)}
+.lrcard.r3{border-left-color:var(--y)}
+.lrcard.r4{border-left-color:#0099CC}
+.lrcard.r5{border-left-color:var(--g)}
+.lrc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.lrc-stars{font-size:16px;color:#F9A825;flex-shrink:0}
+.lrc-plate{font-family:monospace;font-size:13px;font-weight:700;
+           color:var(--bl);background:var(--s);border:1px solid var(--b);
+           padding:2px 8px;border-radius:6px;flex-shrink:0}
+.lrc-store{font-size:11px;color:var(--td);flex:1;min-width:0;
+           overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lrc-sent{font-size:10px;padding:2px 8px;border-radius:10px;flex-shrink:0;font-weight:600}
+.lrc-sent.neg{background:rgba(239,83,80,.1);color:var(--r);border:1px solid rgba(239,83,80,.2)}
+.lrc-sent.pos{background:rgba(78,205,196,.1);color:#2E8B6E;border:1px solid rgba(78,205,196,.2)}
+.lrc-body{font-size:13px;color:var(--t);line-height:1.7;border-top:1px solid var(--b);
+          padding-top:10px;white-space:pre-wrap;word-break:break-all}
+/* Sec3 (原 Sec4): Station grid */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:10px}
+.scard{background:#fff;border:1px solid var(--b);border-radius:14px;
+       padding:14px 18px;display:flex;align-items:center;gap:12px;
+       box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.tl{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.tl.yellow{background:var(--y);box-shadow:0 0 8px rgba(249,168,37,.5)}
+.tl.red{background:var(--r);box-shadow:0 0 8px rgba(239,83,80,.5)}
+.tl.flash{animation:fl .8s infinite}
+@keyframes fl{0%,100%{opacity:1;box-shadow:0 0 12px var(--r)}50%{opacity:.2}}
+.sn{font-size:12px;flex:1;min-width:0;line-height:1.4;color:var(--td);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.savg{font-size:18px;font-weight:700;flex-shrink:0}
+.scnt{font-size:11px;color:var(--td);flex-shrink:0}
+.sbg{height:4px;background:var(--s);border-radius:2px;margin-top:4px}
+.sfill{height:4px;border-radius:2px}
+.abadge{background:var(--r);color:#fff;font-size:10px;padding:3px 10px;
+        border-radius:20px;flex-shrink:0;animation:fl .8s infinite;white-space:nowrap}
+/* Sec5: VQI table */
+.vwrap{overflow-x:auto}
+.vt{width:100%;border-collapse:collapse;font-size:13px}
+.vt th{background:var(--s);border:1px solid var(--b);padding:12px 16px;
+       text-align:left;color:var(--td);font-size:11px;
+       text-transform:uppercase;letter-spacing:1.2px;white-space:nowrap;font-weight:700}
+.vt td{border:1px solid var(--b);padding:12px 16px;vertical-align:middle;color:var(--t)}
+.vt tr:hover td{background:rgba(78,205,196,.04)}
+.vbw{display:flex;align-items:center;gap:8px;min-width:160px}
+.vbbg{flex:1;height:8px;background:var(--s);border-radius:4px;overflow:hidden;border:1px solid var(--b)}
+.vbfill{height:100%;border-radius:4px}
+.vpct{font-size:13px;font-weight:700;min-width:48px;text-align:right}
+.vpl{font-family:monospace;font-size:14px;font-weight:700;color:#0099CC;letter-spacing:1px}
+.vkl{display:flex;flex-wrap:wrap;gap:4px}
+.vkc{font-size:11px;padding:2px 8px;border-radius:10px;
+     background:rgba(239,83,80,.08);border:1px solid rgba(239,83,80,.25);color:var(--sf)}
+.ebtn{background:#fff;border:1px solid var(--b);color:var(--td);
+      border-radius:20px;padding:5px 14px;cursor:pointer;font-size:11px;transition:all .2s}
+.ebtn:hover{border-color:var(--bl);color:var(--bl)}
+.cr{display:none}
+.cr.open{display:table-row}
+.cb{background:var(--s);border-radius:12px;padding:14px}
+.ci{border-bottom:1px solid var(--b);padding:10px 0;font-size:12px;
+    display:flex;gap:12px;align-items:flex-start}
+.ci:last-child{border-bottom:none}
+.cst{color:#F9A825;font-size:12px;flex-shrink:0}
+.ctxt{color:var(--td);line-height:1.6}
+/* Sec6: Model table */
+.mt{width:100%;border-collapse:collapse;font-size:13px}
+.mt th{background:var(--s);border:1px solid var(--b);padding:12px 16px;
+       text-align:left;color:var(--td);font-size:11px;
+       text-transform:uppercase;letter-spacing:1.2px;font-weight:700}
+.mt td{border:1px solid var(--b);padding:12px 16px;vertical-align:middle;color:var(--t)}
+.mt tr:hover td{background:rgba(78,205,196,.04)}
+.mavg{font-size:20px;font-weight:700}
+/* Trend table */
+.trend-wrap{overflow-x:auto}
+.trend-tbl{width:100%;border-collapse:collapse;font-size:14px}
+.trend-tbl th{background:var(--s);border:1px solid var(--b);padding:12px 16px;
+              text-align:center;font-size:14px;color:var(--td);
+              letter-spacing:.5px;font-weight:700;white-space:nowrap}
+.trend-tbl th.cur{background:linear-gradient(135deg,rgba(78,205,196,.15),rgba(0,153,204,.12));
+                  color:var(--bl)}
+.trend-tbl td{border:1px solid var(--b);padding:10px 14px;text-align:center;
+              color:var(--t);font-size:13px;vertical-align:middle}
+.trend-tbl td.cur{background:rgba(78,205,196,.05)}
+.trend-tbl td:first-child{text-align:left;font-weight:600;color:var(--td);
+                          font-size:14px;white-space:nowrap}
+.trend-badge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;
+             margin-left:4px;font-weight:600}
+.trend-up{color:var(--g)}.trend-dn{color:var(--r)}.trend-eq{color:var(--td)}
+.complaint-ok{color:var(--g);font-weight:700}
+.complaint-bad{color:var(--r);font-weight:700}
+.trend-summary{background:linear-gradient(135deg,rgba(78,205,196,.08),rgba(0,153,204,.06));
+               border:1px solid rgba(0,153,204,.2);border-radius:12px;
+               padding:12px 18px;margin-top:14px;font-size:13px;
+               color:var(--td);line-height:1.7}
+/* Complaint Category Matrix */
+.cm-row{border:1px solid var(--b);border-radius:12px;margin-bottom:10px;
+        overflow:hidden;transition:box-shadow .2s}
+.cm-row:hover{box-shadow:0 2px 14px rgba(0,153,204,.12)}
+.cm-hdr{display:grid;grid-template-columns:170px 1fr 260px 28px;
+        gap:14px;align-items:center;padding:14px 18px;cursor:pointer;background:#fff}
+.cm-hdr:hover{background:var(--s)}
+.cm-name{font-weight:700;font-size:14px;color:var(--td)}
+.cm-bar-area{display:flex;align-items:center;gap:10px}
+.cm-bar-track{flex:1;height:14px;background:#F0F2F4;border-radius:7px;overflow:hidden}
+.cm-bar-fill{height:100%;border-radius:7px;transition:width .6s ease}
+.cm-pct-label{font-size:13px;font-weight:700;white-space:nowrap;min-width:72px;text-align:right}
+.cm-trend{display:flex;gap:6px;justify-content:flex-end}
+.cm-tw{font-size:11px;text-align:center;color:var(--td);line-height:1.5;
+       min-width:56px;padding:4px 2px;border-radius:6px}
+.cm-tw.cur{background:rgba(0,153,204,.08);color:var(--bl);font-weight:700}
+.cm-toggle{font-size:11px;color:var(--td);transition:transform .25s;text-align:center;
+           user-select:none}
+.cm-row.open .cm-toggle{transform:rotate(180deg)}
+.cm-detail{display:none;background:var(--s);padding:0 18px 14px 18px}
+.cm-row.open .cm-detail{display:block}
+.cm-wk-hdr{font-size:12px;font-weight:700;color:var(--bl);
+           margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--b)}
+.cm-empty{font-size:12px;color:var(--td);padding:6px 0;font-style:italic}
+.cm-item{display:grid;grid-template-columns:110px 120px 1fr;gap:12px;
+         padding:9px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px}
+.cm-item:last-child{border-bottom:none}
+.cm-plate{font-family:monospace;font-weight:700;color:#0099CC;letter-spacing:.5px}
+.cm-store{color:var(--td);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm-cmt{color:var(--t);line-height:1.6}
+@media(max-width:760px){
+  .cm-hdr{grid-template-columns:1fr 28px}
+  .cm-bar-area,.cm-trend{display:none}
+  .cm-item{grid-template-columns:90px 1fr}
+  .cm-store{display:none}
+}
+/* SC sub label */
+.sc-sub{font-size:10px;color:var(--td);margin-top:4px}
+/* Sec7: Two-panel insights layout */
+.ins-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:900px){.ins-grid{grid-template-columns:1fr}}
+.ins-panel{border-radius:16px;padding:20px;border:2px solid var(--b)}
+.rule-panel{background:#FAFBFC;border-color:var(--b)}
+.ai-panel{background:linear-gradient(160deg,rgba(78,205,196,.04),rgba(0,153,204,.06));
+          border-color:rgba(0,153,204,.25)}
+.ai-panel.ai-error{background:rgba(249,168,37,.03);border-color:rgba(249,168,37,.3)}
+.ins-panel-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px;
+               padding-bottom:12px;border-bottom:2px solid var(--b)}
+.ins-panel-icon{font-size:18px}
+.ins-panel-title{font-size:15px;font-weight:700;color:var(--t);flex:1}
+.ins-summary{background:linear-gradient(135deg,rgba(78,205,196,.1),rgba(0,153,204,.08));
+             border:1px solid rgba(0,153,204,.2);border-radius:12px;
+             padding:14px 18px;margin-bottom:14px;font-size:13px;
+             color:var(--t);line-height:1.8}
+.ins-block{background:#fff;border:1px solid var(--b);border-radius:12px;
+           padding:16px;box-shadow:0 2px 6px rgba(0,0,0,.03)}
+.ins-hdr{font-size:13px;font-weight:700;margin-bottom:10px;padding-bottom:8px;
+         border-bottom:2px solid var(--b)}
+.ins-issue{color:var(--r)}
+.ins-action{color:var(--bl)}
+.ins-positive{color:var(--g)}
+.ins-item{font-size:13px;color:var(--t);line-height:1.7;padding:7px 11px;
+          border-radius:8px;margin-bottom:5px}
+.ins-item:last-child{margin-bottom:0}
+.ii{background:rgba(239,83,80,.06);border-left:3px solid var(--r)}
+.ia{background:rgba(0,153,204,.06);border-left:3px solid var(--bl)}
+.ip{background:rgba(78,205,196,.06);border-left:3px solid var(--g)}
+.ins-empty{font-size:12px;color:var(--td);font-style:italic;padding:4px 0}
+.ai-badge{display:inline-block;font-size:11px;padding:2px 10px;border-radius:10px;
+          background:linear-gradient(135deg,#4ECDC4,#0099CC);color:#fff;font-weight:600}
+.rule-badge{display:inline-block;font-size:11px;padding:2px 10px;border-radius:10px;
+            background:var(--s);color:var(--td);border:1px solid var(--b);font-weight:600}
+.ai-err-box{display:flex;gap:14px;align-items:flex-start;background:rgba(249,168,37,.08);
+            border:1px solid rgba(249,168,37,.3);border-radius:12px;padding:16px}
+.ai-err-icon{font-size:22px;flex-shrink:0;line-height:1}
+.ai-err-msg{font-size:13px;color:var(--td);line-height:1.7;white-space:pre-line}
+/* Footer */
+footer{text-align:center;padding:24px;color:var(--td);
+       font-size:12px;border-top:1px solid var(--b);background:var(--s)}
+@media(max-width:768px){
+  .srow{grid-template-columns:repeat(2,1fr);padding:16px}
+  .sec,.hdr{padding:20px 16px}
+  .sgrid,.lrgrid{grid-template-columns:1fr}
+  .rd-label{width:70px}}
+</style>
 </head>
 <body>
-  <div class="box">
-    <div class="icon">⭐</div>
-    <h2>客戶系統評論週報</h2>
-    <p>此看板尚未發布。<br>請執行對應的 Skill 產生報告後，系統將自動更新。</p>
-    <a href="index.html">← 返回總覽</a>
+<header class="hdr">
+  <div>
+    <h1>&#x1F4CA; 系統客戶評論看板</h1>
+    <div class="sub">機車租賃服務 &#183; 客戶回饋即時監控系統</div>
   </div>
+  <div class="dbadge"><span>資料區間：</span>2026-05-01 &#8212; 2026-05-17</div>
+</header>
+<div class="srow">
+  <div class="sc"><div class="scn">687</div><div class="scl">總評論數</div></div>
+  <div class="sc"><div class="scn">3.85</div><div class="scl">整體平均星等</div></div>
+  <div class="sc"><div class="scn">58</div><div class="scl">非預設評論數</div></div>
+  <div class="sc"><div class="scn">54</div><div class="scl">服務站點數</div></div>
+  <div class="sc">
+    <div class="scn" style="-webkit-text-fill-color:var(--r)">3.99%</div>
+    <div class="scl">本週客訴率</div>
+    <div class="sc-sub">⚠ 超標 &nbsp; 基準 ≤ 2.0%</div>
+  </div>
+</div>
+
+<!-- ① 星等分布總覽 -->
+<div class="sec">
+  <div class="sh"><div class="snum">1</div>
+    <div class="stit">星等分布總覽 <small>Score Distribution Overview</small></div></div>
+  <div>
+    <div class="rd-row">
+      <div class="rd-label"><span style="color:#4ECDC4">★★★★★</span> 五星</div>
+      <div class="rd-bar-wrap">
+        <div class="rd-bar" style="width:92.6%;background:#4ECDC4"></div>
+      </div>
+      <div class="rd-cnt">287 <span class="rd-pct">(41.8%)</span></div>
+    </div>
+    <div class="rd-row">
+      <div class="rd-label"><span style="color:#0099CC">★★★★☆</span> 四星</div>
+      <div class="rd-bar-wrap">
+        <div class="rd-bar" style="width:18.7%;background:#0099CC"></div>
+      </div>
+      <div class="rd-cnt">58 <span class="rd-pct">(8.4%)</span></div>
+    </div>
+    <div class="rd-row">
+      <div class="rd-label"><span style="color:#F9A825">★★★☆☆</span> 三星</div>
+      <div class="rd-bar-wrap">
+        <div class="rd-bar" style="width:100.0%;background:#F9A825"></div>
+      </div>
+      <div class="rd-cnt">310 <span class="rd-pct">(45.1%)</span></div>
+    </div>
+    <div class="rd-row">
+      <div class="rd-label"><span style="color:#FF9100">★★☆☆☆</span> 二星</div>
+      <div class="rd-bar-wrap">
+        <div class="rd-bar" style="width:4.8%;background:#FF9100"></div>
+      </div>
+      <div class="rd-cnt">15 <span class="rd-pct">(2.2%)</span></div>
+    </div>
+    <div class="rd-row">
+      <div class="rd-label"><span style="color:#EF5350">★☆☆☆☆</span> 一星</div>
+      <div class="rd-bar-wrap">
+        <div class="rd-bar" style="width:5.5%;background:#EF5350"></div>
+      </div>
+      <div class="rd-cnt">17 <span class="rd-pct">(2.5%)</span></div>
+    </div></div>
+</div>
+
+<!-- ① 4週趨勢比較 -->
+<div class="sec">
+  <div class="sh"><div class="snum" style="font-size:16px;background:none;color:var(--bl)">📈</div>
+    <div class="stit">4 週趨勢比較
+      <small>客訴率基準 ≤ 2.0%　|　▲▼ 與前週比較</small></div></div>
+  <div class="trend-wrap">
+    <table class="trend-tbl">
+      <thead><tr>
+        <th>指標</th>
+        <th>04/10–04/26</th><th>04/17–05/03</th><th>04/24–05/10</th><th class="cur">05/01–05/17<br><span style="font-size:12px;color:var(--bl)">本週</span></th>
+      </tr></thead>
+      <tbody id="wt"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ② 客戶真實留言 -->
+<div class="sec">
+  <div class="sh"><div class="snum">2</div>
+    <div class="stit">客戶真實留言
+      <small>共 58 筆 · AI 情感分析 · 低星等優先</small></div></div>
+  <div class="rev-tabs">
+    <button class="rev-tab active all" onclick="switchRevTab('all',this)">
+      全部 <span class="tab-cnt">58</span>
+    </button>
+    <button class="rev-tab neg" onclick="switchRevTab('negative',this)">
+      &#x1F534; 負面 / 有抱怨 <span class="tab-cnt">31</span>
+    </button>
+    <button class="rev-tab pos" onclick="switchRevTab('positive',this)">
+      &#x1F7E2; 正面 / 滿意 <span class="tab-cnt">27</span>
+    </button>
+  </div>
+  <div class="lrgrid" id="lrg"></div>
+</div>
+
+<!-- ② 客訴問題分類優先矩陣 -->
+<div class="sec">
+  <div class="sh">
+    <div class="snum" style="font-size:16px;background:none;color:var(--bl)">🎯</div>
+    <div class="stit">客訴問題分類優先矩陣
+      <small>依本週佔比排序 · 點擊展開評論原文 · 含 4 週趨勢</small>
+    </div>
+  </div>
+  <div id="cat-matrix"></div>
+</div>
+
+<!-- ③ 各店家評分分析（僅黃+紅） -->
+<div class="sec">
+  <div class="sh"><div class="snum">3</div>
+    <div class="stit">各店家評分分析
+      <small>警示站點 31 站（黃色 avg 3.0–3.9 · 紅色 avg &lt; 3.0）</small></div></div>
+  <div class="leg">
+    <div class="li"><div class="dot" style="background:var(--y);box-shadow:0 0 6px var(--y)"></div>普通（3.0–3.9）</div>
+    <div class="li"><div class="dot" style="background:var(--r);box-shadow:0 0 6px var(--r)"></div>警示（&lt; 3.0）</div>
+    <div class="li"><div class="dot" style="background:var(--r);animation:fl .8s infinite"></div>&#x26A0; 連續 3 次低評</div>
+  </div>
+  <div class="sgrid" id="sg"></div>
+</div>
+
+<!-- ④ 車況品質指數 VQI -->
+<div class="sec">
+  <div class="sh"><div class="snum">4</div>
+    <div class="stit">車況品質指數 <small>Vehicle Quality Index (VQI)</small></div></div>
+  <p style="font-size:13px;color:var(--td);margin-bottom:14px">
+    公式：VQI = 車輛硬體負評數 &divide; 總訂單數 &times; 100%　|　僅列具硬體相關回饋之車牌
+  </p>
+  <div class="vwrap">
+    <table class="vt">
+      <thead><tr>
+        <th>排名</th><th>車牌</th><th>VQI 指數</th>
+        <th>硬體負評/總單</th><th>熱搜關鍵字</th><th>客戶評論</th>
+      </tr></thead>
+      <tbody id="vb"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ⑤ 車型系列評分分析 -->
+<div class="sec">
+  <div class="sh"><div class="snum">5</div>
+    <div class="stit">車型系列評分分析 <small>Model Satisfaction (≥ 10 reviews)</small></div></div>
+  <div class="vwrap">
+    <table class="mt">
+      <thead><tr>
+        <th>排名</th><th>車型系列</th><th>平均星等</th><th>評論筆數</th>
+      </tr></thead>
+      <tbody id="mb"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ⑥ 綜合分析與行動建議 -->
+<div class="sec">
+  <div class="sh"><div class="snum">6</div>
+    <div class="stit">綜合分析與行動建議
+      <small>左側：規則邏輯　右側：Claude AI 深度分析</small></div></div>
+  <div class="ins-grid">
+    
+  <div class="ins-panel rule-panel">
+    <div class="ins-panel-hdr">
+      <span class="ins-panel-icon">📊</span>
+      <span class="ins-panel-title">規則邏輯分析</span>
+      <span class="rule-badge">自動規則</span>
+    </div>
+    <div class="ins-block">
+      <div class="ins-hdr ins-issue">⚠ 問題識別</div>
+      <div class="ins-item ii">整體平均星等 3.85 ★（3.5–3.9），仍有明顯提升空間。</div><div class="ins-item ii">紅色警示站點 avg < 3.0（共 1 站）：彰化鹿港澄悅酒店。</div><div class="ins-item ii">安全類最高頻關鍵字「電池」出現 3 次，涉及 3 筆評論。</div><div class="ins-item ii">車況最差車牌 EMD-6828（VQI 100.0%），硬體問題顯著。</div>
+    </div>
+    <div class="ins-block" style="margin-top:14px">
+      <div class="ins-hdr ins-action">▶ 行動建議</div>
+      <div class="ins-item ia">設定下週目標：平均星等提升 0.1，重點推進低分站點改善計畫。</div><div class="ins-item ia">紅色站點優先安排主管巡訪，排查是否有系統性問題（車齡、APP、客服）。</div><div class="ins-item ia">安全關鍵字涉及車牌 MQA-0900, EMD-8116, EQB-3278 等，優先排入保養廠回廠檢修。</div><div class="ins-item ia">VQI 前三名車牌（EMD-6828, EMD-6826, EMD-6815）立即排入維修工單，完成前暫停出租。</div>
+    </div>
+  </div>
+  <div class="ins-panel ai-panel ai-error">
+    <div class="ins-panel-hdr">
+      <span class="ins-panel-icon">✦</span>
+      <span class="ins-panel-title">Claude AI 深度分析</span>
+      <span class="rule-badge">未啟用</span>
+    </div>
+    <div class="ai-err-box">
+      <div class="ai-err-icon">⚠</div>
+      <div class="ai-err-msg">尚未設定 ANTHROPIC_API_KEY。
+請至 GitHub → Settings → Secrets → Actions 新增此金鑰，下次執行即可啟用 AI 分析。</div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<footer>
+  資料來源：2026-05-01 &#8211; 2026-05-17 客戶評論
+  &nbsp;&#183;&nbsp; ZOCHA 租車服務品質監控系統
+</footer>
+<script>
+var S=[{"name": "彰化鹿港澄悅酒店", "avg": 1.0, "count": 1, "color": "red", "flash": false}, {"name": "台中中港轉運站店", "avg": 3.0, "count": 2, "color": "yellow", "flash": false}, {"name": "ZOCHA-桃園後站無人店", "avg": 3.0, "count": 4, "color": "yellow", "flash": false}, {"name": "清水火車站-葆丞無人智慧租車", "avg": 3.0, "count": 2, "color": "yellow", "flash": false}, {"name": "馥御花園酒店無人店", "avg": 3.0, "count": 3, "color": "yellow", "flash": false}, {"name": "ZOCHA-竹北站前無人店", "avg": 3.0, "count": 1, "color": "yellow", "flash": false}, {"name": "礁溪轉運站無人店", "avg": 3.2, "count": 5, "color": "yellow", "flash": false}, {"name": "ZOCHA東港轉運站無人店", "avg": 3.33, "count": 6, "color": "yellow", "flash": false}, {"name": "ZOCHA三創園區無人店(B2停車場)", "avg": 3.33, "count": 3, "color": "yellow", "flash": false}, {"name": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "avg": 3.38, "count": 16, "color": "yellow", "flash": false}, {"name": "ZOCHA-竹南火車站前無人店", "avg": 3.5, "count": 8, "color": "yellow", "flash": false}, {"name": "ZOCHA-朝馬轉運站無人店", "avg": 3.5, "count": 6, "color": "yellow", "flash": false}, {"name": "ZOCHA花蓮站前無人店", "avg": 3.58, "count": 24, "color": "yellow", "flash": false}, {"name": "ZOCHA-屏東站前無人店", "avg": 3.6, "count": 10, "color": "yellow", "flash": false}, {"name": "ZOCHA-蘇澳煙波大飯店無人店", "avg": 3.6, "count": 10, "color": "yellow", "flash": false}, {"name": "ZOCHA-嘉義高鐵無人店", "avg": 3.61, "count": 18, "color": "yellow", "flash": false}, {"name": "ZOCHA-台中高鐵無人店", "avg": 3.65, "count": 34, "color": "yellow", "flash": false}, {"name": "ZOCHA-桃園高鐵無人店", "avg": 3.67, "count": 6, "color": "yellow", "flash": false}, {"name": "台南煙波大飯店", "avg": 3.68, "count": 37, "color": "yellow", "flash": false}, {"name": "ZOCHA-宜蘭頭城無人店", "avg": 3.71, "count": 17, "color": "yellow", "flash": false}, {"name": "ZOCHA-台南高鐵無人店", "avg": 3.76, "count": 72, "color": "yellow", "flash": false}, {"name": "GoGoRent竹北高鐵無人自助取還站-智能租車", "avg": 3.76, "count": 37, "color": "yellow", "flash": false}, {"name": "ZOCHA-金門機場無人店", "avg": 3.8, "count": 5, "color": "yellow", "flash": false}, {"name": "ZOCHA-台南轉運無人店", "avg": 3.8, "count": 5, "color": "yellow", "flash": false}, {"name": "ZOCHA- 花蓮煙波大飯店無人店", "avg": 3.83, "count": 6, "color": "yellow", "flash": false}, {"name": "ZOCHA-斗六火車站前無人店", "avg": 3.83, "count": 6, "color": "yellow", "flash": false}, {"name": "ZOCHA租機車-羅東前站無人店", "avg": 3.89, "count": 18, "color": "yellow", "flash": false}, {"name": "ZOCHA-台南善化無人店", "avg": 3.89, "count": 9, "color": "yellow", "flash": false}, {"name": "ZOCHA-左營高鐵無人店", "avg": 3.91, "count": 64, "color": "yellow", "flash": false}, {"name": "ZOCHA-沙鹿火車站無人店", "avg": 3.91, "count": 11, "color": "yellow", "flash": false}, {"name": "ZOCHA-基隆站前無人店", "avg": 3.92, "count": 25, "color": "yellow", "flash": false}, {"name": "ZOCHA-潮州站前無人店", "avg": 4.0, "count": 6, "color": "green", "flash": false}, {"name": "ZOCHA-南投水里無人店", "avg": 4.0, "count": 5, "color": "green", "flash": false}, {"name": "新竹欣益站前店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "彰化田中火車站後站無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA-斗南火車站前無人店", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA租機車-恆春轉運站無人店", "avg": 4.0, "count": 5, "color": "green", "flash": false}, {"name": "台南明正車業", "avg": 4.0, "count": 2, "color": "green", "flash": false}, {"name": "ZOCHA台中站前店-24小時無人店", "avg": 4.0, "count": 5, "color": "green", "flash": false}, {"name": "ZOCHA-高雄站前店", "avg": 4.02, "count": 52, "color": "green", "flash": false}, {"name": "ZOCHA租機車-新營站前無人店", "avg": 4.08, "count": 13, "color": "green", "flash": false}, {"name": "雲林虎尾高鐵無人店 ", "avg": 4.13, "count": 15, "color": "green", "flash": false}, {"name": "ZOCHA-台中站前店", "avg": 4.14, "count": 7, "color": "green", "flash": false}, {"name": "彰化正楙店", "avg": 4.2, "count": 5, "color": "green", "flash": false}, {"name": "豐原轉運站B2-葆丞無人智慧租車(豐原火車站24小時)", "avg": 4.23, "count": 22, "color": "green", "flash": false}, {"name": "彰化田中高鐵站前無人店", "avg": 4.23, "count": 22, "color": "green", "flash": false}, {"name": "ZOCHA-台東站前店", "avg": 4.27, "count": 22, "color": "green", "flash": false}, {"name": "逢甲夜市-葆丞無人智慧租車", "avg": 4.33, "count": 3, "color": "green", "flash": false}, {"name": "彰化員林火車站無人店", "avg": 4.36, "count": 11, "color": "green", "flash": false}, {"name": "台中后里奇典租車行", "avg": 4.45, "count": 11, "color": "green", "flash": false}, {"name": "台南台糖長榮酒店", "avg": 5.0, "count": 1, "color": "green", "flash": false}, {"name": "ZOCHA-葆丞大甲火車站無人店", "avg": 5.0, "count": 1, "color": "green", "flash": false}, {"name": "彰化二水火車站無人店", "avg": 5.0, "count": 1, "color": "green", "flash": false}, {"name": "ZOCHA高雄站前店-24小時", "avg": 5.0, "count": 1, "color": "green", "flash": false}];var V=[{"plate": "EMD-6828", "neg_hw": 1, "total": 1, "vqi": 100.0, "hw_keywords": ["車廂"], "comments": [{"rating": 4, "comment": "租借到的車輛偏舊，不太好關車廂，其他都還不錯", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)"}]}, {"plate": "EMD-6826", "neg_hw": 1, "total": 2, "vqi": 50.0, "hw_keywords": ["煞車", "中柱"], "comments": [{"rating": 4, "comment": "讚! 是一次好的租車體驗，只是安全帽兩頂都沒有遮罩有點不便，租還真的都蠻便利！", "store": "ZOCHA租機車-恆春轉運站無人店"}, {"rating": 3, "comment": "我力氣不夠😂中柱立不起來，煞車有怪聲音，其他正常", "store": "ZOCHA租機車-恆春轉運站無人店"}]}, {"plate": "EMD-6815", "neg_hw": 1, "total": 3, "vqi": 33.3, "hw_keywords": ["熄火"], "comments": [{"rating": 1, "comment": "Gogoro沒辦法熄火", "store": "ZOCHA租機車-羅東前站無人店"}]}, {"plate": "EMD-8116", "neg_hw": 1, "total": 3, "vqi": 33.3, "hw_keywords": ["電池", "沒電"], "comments": [{"rating": 1, "comment": "車輛系統請記得更新喔！\n小電池沒電實在是令人感到恐慌，滿心期待的旅程成為不定時的炸彈，有點不知所措。幸好是發生在客服的上班時間，如果是客服時間，那麼這些難題就只能自己克服，實屬一次寂寞與焦慮交雜的體驗。如果還有機會，會喚起這段回憶，做好充足的準備。", "store": "ZOCHA-台東站前店"}]}, {"plate": "EMD-6838", "neg_hw": 1, "total": 3, "vqi": 33.3, "hw_keywords": ["保養"], "comments": [{"rating": 3, "comment": "讚! 是一次好的租車體驗\n車子太舊都沒有保養", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)"}, {"rating": 3, "comment": "順利完成", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)"}]}, {"plate": "MQA-0900", "neg_hw": 1, "total": 3, "vqi": 33.3, "hw_keywords": ["電池"], "comments": [{"rating": 5, "comment": "電池掉電偏快以外，沒什麼可以挑剔的", "store": "ZOCHA-金門機場無人店"}]}, {"plate": "EMH-2707", "neg_hw": 1, "total": 3, "vqi": 33.3, "hw_keywords": ["車廂"], "comments": [{"rating": 1, "comment": "客服下班，打電話或是line都沒人可以幫忙解決，車廂一直打不開，用系統內的手動開啟車廂，也沒反應，搞了10分鐘，我放棄了！直接原地還車，完全沒使用到，請直接退還給我$100！謝謝", "store": "礁溪轉運站無人店"}]}, {"plate": "MJF-6867", "neg_hw": 1, "total": 4, "vqi": 25.0, "hw_keywords": ["煞車", "輪胎"], "comments": [{"rating": 5, "comment": "讚! 是一次好的租車體驗\n但是輪胎有點不夠氣，煞車不夠靈敏", "store": "ZOCHA-台東站前店"}]}, {"plate": "EQB-3278", "neg_hw": 1, "total": 6, "vqi": 16.7, "hw_keywords": ["電池", "沒電"], "comments": [{"rating": 4, "comment": "車子找了好久才找到，此外手機支架也無法正常使用，車子前方的洞口還有積水及垃圾，若不是客服很有耐心協助回覆，不然應該給1星，這4顆星是給客服的讚美", "store": "ZOCHA-桃園高鐵無人店"}, {"rating": 3, "comment": "電池超容易沒電，請多維護", "store": "ZOCHA-桃園高鐵無人店"}]}, {"plate": "EMD-7166", "neg_hw": 1, "total": 7, "vqi": 14.3, "hw_keywords": ["熄火"], "comments": [{"rating": 5, "comment": "希望教學更明確", "store": "ZOCHA-台南高鐵無人店"}, {"rating": 2, "comment": "等紅綠燈時候車子會自動熄火", "store": "ZOCHA-台南高鐵無人店"}]}];var L=[{"rating": 1, "comment": "Gogoro沒辦法熄火", "store": "ZOCHA租機車-羅東前站無人店", "plate": "EMD-6815", "sentiment": "positive", "week_num": 4}, {"rating": 1, "comment": "車輛系統請記得更新喔！\n小電池沒電實在是令人感到恐慌，滿心期待的旅程成為不定時的炸彈，有點不知所措。幸好是發生在客服的上班時間，如果是客服時間，那麼這些難題就只能自己克服，實屬一次寂寞與焦慮交雜的體驗。如果還有機會，會喚起這段回憶，做好充足的準備。", "store": "ZOCHA-台東站前店", "plate": "EMD-8116", "sentiment": "negative", "week_num": 4}, {"rating": 1, "comment": "車輛故障無法使用", "store": "彰化鹿港澄悅酒店", "plate": "EQS-6615", "sentiment": "negative", "week_num": 4}, {"rating": 1, "comment": "租借系統非常糟糕。一直會卡，也不好找車，以後不會用", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "plate": "EMR-7868", "sentiment": "negative", "week_num": 4}, {"rating": 1, "comment": "不知道是不是給我重複扣款", "store": "ZOCHA-朝馬轉運站無人店", "plate": "EMG-5197", "sentiment": "negative", "week_num": 4}, {"rating": 1, "comment": "不能甲租乙還有夠不未方便", "store": "ZOCHA-宜蘭頭城無人店", "plate": "EMD-8117", "sentiment": "negative", "week_num": 4}, {"rating": 1, "comment": "無法發動", "store": "ZOCHA-蘇澳煙波大飯店無人店", "plate": "EPA-5033", "sentiment": "negative", "week_num": 4}, {"rating": 1, "comment": "已經預定Gogoro 3 plus 到當場沒車也沒通知打電話也沒人接等快半小時才有人處理 後續只說幫忙換成Gogoro2然後也沒其他表示", "store": "ZOCHA-台南高鐵無人店", "plate": "EMD-8095", "sentiment": "positive", "week_num": 4}, {"rating": 1, "comment": "鏈條該上油了", "store": "ZOCHA-桃園後站無人店", "plate": "EMT-6019", "sentiment": "positive", "week_num": 4}, {"rating": 1, "comment": "沒騎到預定還車時間 結果錢還收一樣", "store": "ZOCHA-台南高鐵無人店", "plate": "EMV-8693", "sentiment": "positive", "week_num": 4}, {"rating": 1, "comment": "客服下班，打電話或是line都沒人可以幫忙解決，車廂一直打不開，用系統內的手動開啟車廂，也沒反應，搞了10分鐘，我放棄了！直接原地還車，完全沒使用到，請直接退還給我$100！謝謝", "store": "礁溪轉運站無人店", "plate": "EMH-2707", "sentiment": "positive", "week_num": 4}, {"rating": 1, "comment": "車子在等紅綠燈中間多次突然無法前進", "store": "ZOCHA-左營高鐵無人店", "plate": "EMD-6832", "sentiment": "negative", "week_num": 4}, {"rating": 1, "comment": "體驗太差了，不管是車輛，服務，地點的都非常差，一定不會再租基隆", "store": "ZOCHA-基隆站前無人店", "plate": "EMU-7973", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "普通", "store": "ZOCHA-沙鹿火車站無人店", "plate": "ENT-3729", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "車輛狀況很糟", "store": "ZOCHA-台南轉運無人店", "plate": "EMP-1503", "sentiment": "positive", "week_num": 4}, {"rating": 2, "comment": "油沒加滿", "store": "ZOCHA-左營高鐵無人店", "plate": "NPR-9316", "sentiment": "positive", "week_num": 4}, {"rating": 2, "comment": "Go鍵不好用", "store": "ZOCHA-台中高鐵無人店", "plate": "EMS-1975", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "這台機車好像有一點點問題，催油門的時候會ㄧ鈍ㄧ鈍的", "store": "ZOCHA-左營高鐵無人店", "plate": "NKN-8001", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "車子部份沒太多問題，但是第一次碰到還車定位錯誤不給還車，導致高鐵沒趕上...", "store": "ZOCHA-台中高鐵無人店", "plate": "EMD-8097", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "讚! 是一次好的租車體驗，APP很差", "store": "ZOCHA-嘉義高鐵無人店", "plate": "EMD-6809", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "等紅綠燈時候車子會自動熄火", "store": "ZOCHA-台南高鐵無人店", "plate": "EMD-7166", "sentiment": "positive", "week_num": 4}, {"rating": 2, "comment": "雖然及時幫我換但有需修理的車可以不要放在架上嗎…", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "plate": "ENA-1276", "sentiment": "negative", "week_num": 4}, {"rating": 2, "comment": "還好", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "plate": "EWR-1798", "sentiment": "positive", "week_num": 4}, {"rating": 2, "comment": "費用太貴，安全帽太臭", "store": "ZOCHA-基隆站前無人店", "plate": "EMW-8292", "sentiment": "negative", "week_num": 4}, {"rating": 3, "comment": "竹南停車場管理員態度不佳，牽車還車非常困難，停車場內車輛都隨意交叉橫豎亂停", "store": "ZOCHA-竹南火車站前無人店", "plate": "EMV-1573", "sentiment": "negative", "week_num": 4}, {"rating": 3, "comment": "讚! 是一次好的租車體驗\n手機支架有問題不能使用！！", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "plate": "EMD-6821", "sentiment": "negative", "week_num": 4}, {"rating": 3, "comment": "讚! 是一次好的租車體驗\n\n很優謝謝！", "store": "ZOCHA- 花蓮煙波大飯店無人店", "plate": "EPW-5891", "sentiment": "positive", "week_num": 4}, {"rating": 3, "comment": "讚! 是一次好的租車體驗\n車很爛", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "plate": "EMR-7868", "sentiment": "negative", "week_num": 4}, {"rating": 3, "comment": "good! 是一次好的租車體驗", "store": "ZOCHA-高雄站前店", "plate": "NVH-3780", "sentiment": "positive", "week_num": 4}, {"rating": 3, "comment": "讚! 是一次好的租車體驗\n車子太舊都沒有保養", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "plate": "EMD-6838", "sentiment": "negative", "week_num": 4}, {"rating": 3, "comment": "雖然臨時租車，但是希望有車租，因回答不一所以我真的搞不清楚到底可不可以租。", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "plate": "EWR-1798", "sentiment": "negative", "week_num": 4}, {"rating": 3, "comment": "電池超容易沒電，請多維護", "store": "ZOCHA-桃園高鐵無人店", "plate": "EQB-3278", "sentiment": "negative", "week_num": 4}, {"rating": 3, "comment": "讚! 是一次好的租車體驗，機車若能不要震那麼厲害會更好，避震器還可以改進，我有加滿油哦～", "store": "豐原轉運站B2-葆丞無人智慧租車(豐原火車站24小時)", "plate": "NVE-7603", "sentiment": "positive", "week_num": 4}, {"rating": 3, "comment": "車子感應有時候不良 尚可", "store": "逢甲夜市-葆丞無人智慧租車", "plate": "EMS-2101", "sentiment": "negative", "week_num": 4}, {"rating": 3, "comment": "順利完成", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "plate": "EMD-6838", "sentiment": "positive", "week_num": 4}, {"rating": 3, "comment": "我力氣不夠😂中柱立不起來，煞車有怪聲音，其他正常", "store": "ZOCHA租機車-恆春轉運站無人店", "plate": "EMD-6826", "sentiment": "negative", "week_num": 4}, {"rating": 4, "comment": "車子找了好久才找到，此外手機支架也無法正常使用，車子前方的洞口還有積水及垃圾，若不是客服很有耐心協助回覆，不然應該給1星，這4顆星是給客服的讚美", "store": "ZOCHA-桃園高鐵無人店", "plate": "EQB-3278", "sentiment": "negative", "week_num": 4}, {"rating": 4, "comment": "租借到的車輛偏舊，不太好關車廂，其他都還不錯", "store": "ZOCHA租機車-礁溪站前無人店(湯圍街)", "plate": "EMD-6828", "sentiment": "positive", "week_num": 4}, {"rating": 4, "comment": "左側飛旋踏板不好打開", "store": "ZOCHA-台南高鐵無人店", "plate": "EMV-8691", "sentiment": "negative", "week_num": 4}, {"rating": 4, "comment": "AAOA", "store": "ZOCHA台中站前店-24小時無人店", "plate": "EMD-8121", "sentiment": "positive", "week_num": 4}, {"rating": 4, "comment": "還車時原本停放區域被停滿，看起來有一些私車停入固定停放區域內，已有聯繫真人客服，客服有請我先停放到下面區域，最後有順利完成還車程序。", "store": "ZOCHA-左營高鐵無人店", "plate": "NPR-9316", "sentiment": "positive", "week_num": 4}, {"rating": 4, "comment": "讚! 是一次好的租車體驗，只是安全帽兩頂都沒有遮罩有點不便，租還真的都蠻便利！", "store": "ZOCHA租機車-恆春轉運站無人店", "plate": "EMD-6826", "sentiment": "negative", "week_num": 4}, {"rating": 4, "comment": "讚! 是一次好的租車體驗\n租借的位子不明顯晚上還車的話蠻暗的，其他的部分都還可以很方便", "store": "ZOCHA-嘉義高鐵無人店", "plate": "EMD-6809", "sentiment": "positive", "week_num": 4}, {"rating": 4, "comment": "可能是前幾天下雨的關係 安全帽跟鑰匙證據袋都是濕的 異味很重", "store": "ZOCHA花蓮站前無人店", "plate": "EMX-0620", "sentiment": "positive", "week_num": 4}, {"rating": 4, "comment": "讚! 是一次好的租車體驗🐴🉐gogoro很難啟動", "store": "GoGoRent竹北高鐵無人自助取還站-智能租車", "plate": "ENT-6586", "sentiment": "negative", "week_num": 4}, {"rating": 4, "comment": "讚! 是一次好的租車體驗\n客服親切！很幫忙！", "store": "礁溪轉運站無人店", "plate": "EMW-2055", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "讚! 是一次好的租車體驗\n但是輪胎有點不夠氣，煞車不夠靈敏", "store": "ZOCHA-台東站前店", "plate": "MJF-6867", "sentiment": "negative", "week_num": 4}, {"rating": 5, "comment": "讚！方便好用！", "store": "ZOCHA-台南高鐵無人店", "plate": "EMD-6819", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "讚! 是一次好的租車體驗 客服不夠及時", "store": "ZOCHA-左營高鐵無人店", "plate": "NPR-9323", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "Thank you we had a great trip!", "store": "ZOCHA-基隆站前無人店", "plate": "EMW-8292", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "希望教學更明確", "store": "ZOCHA-台南高鐵無人店", "plate": "EMD-7166", "sentiment": "negative", "week_num": 4}, {"rating": 5, "comment": "讚! 是一次好的租車體驗！很棒喔！", "store": "ZOCHA-高雄站前店", "plate": "NPR-9317", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "非常棒，第一次這樣租機車，讓行程順利愉快，也了解原來全台有這麼多站可以始用，下次會繼續租機車👍", "store": "ZOCHA-左營高鐵無人店", "plate": "NNM-8765", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "讚! 是一次好的租車體驗，非常方便❤️", "store": "ZOCHA-左營高鐵無人店", "plate": "NPR-9315", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "電池掉電偏快以外，沒什麼可以挑剔的", "store": "ZOCHA-金門機場無人店", "plate": "MQA-0900", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "讚! 又是一次好的租車體驗\n不過 NPR-9312這輛車差不多要換機油囉\n燈亮了 其餘部分都很好 謝謝", "store": "ZOCHA-左營高鐵無人店", "plate": "NPR-9312", "sentiment": "negative", "week_num": 4}, {"rating": 5, "comment": "這次車況很好", "store": "ZOCHA-台東站前店", "plate": "EMD-7170", "sentiment": "positive", "week_num": 4}, {"rating": 5, "comment": "建議可以先顯示車牌再讓客戶端進行拍照，多筆訂單會有搞混的情況～\n或是可以建議客人先拍照，再一次還！", "store": "ZOCHA租機車-羅東前站無人店", "plate": "EMD-8132", "sentiment": "negative", "week_num": 4}];var M=[{"model": "Gogoro Viva Mix", "avg": 3.42, "count": 19, "color": "yellow", "dist": {"1": 1, "2": 0, "3": 13, "4": 0, "5": 5}}, {"model": "Gogoro 2 Plus", "avg": 3.76, "count": 419, "color": "yellow", "dist": {"1": 12, "2": 10, "3": 202, "4": 39, "5": 156}}, {"model": "Gogoro 3 Plus", "avg": 3.8, "count": 49, "color": "yellow", "dist": {"1": 2, "2": 1, "3": 22, "4": 4, "5": 20}}, {"model": "Gogoro 2 Delight", "avg": 4.0, "count": 12, "color": "green", "dist": {"1": 0, "2": 1, "3": 4, "4": 1, "5": 6}}, {"model": "Gogoro viva XL", "avg": 4.06, "count": 16, "color": "green", "dist": {"1": 1, "2": 0, "3": 5, "4": 1, "5": 9}}, {"model": "JOG125", "avg": 4.14, "count": 36, "color": "green", "dist": {"1": 0, "2": 0, "3": 13, "4": 5, "5": 18}}, {"model": "新迪爵", "avg": 4.24, "count": 59, "color": "green", "dist": {"1": 1, "2": 2, "3": 16, "4": 3, "5": 37}}];var W=[{"label": "04/10–04/26", "is_current": false, "avg_rating": 3.81, "total_reviews": 645, "total_orders": 1102, "complaint_rate": 3.81, "complaint_count": 42, "red_stations": 2}, {"label": "04/17–05/03", "is_current": false, "avg_rating": 3.84, "total_reviews": 697, "total_orders": 1166, "complaint_rate": 4.03, "complaint_count": 47, "red_stations": 1}, {"label": "04/24–05/10", "is_current": false, "avg_rating": 3.86, "total_reviews": 680, "total_orders": 1141, "complaint_rate": 3.42, "complaint_count": 39, "red_stations": 1}, {"label": "05/01–05/17", "is_current": true, "avg_rating": 3.85, "total_reviews": 687, "total_orders": 1203, "complaint_rate": 3.99, "complaint_count": 48, "red_stations": 1}];
+var CM=[];var WL=["04/10–04/26", "04/17–05/03", "04/24–05/10", "05/01–05/17"];var WN=[26, 30, 27, 31];
+
+/* Sec2: Review tabs */
+var _rtab='all';
+function rL(tab){
+  _rtab=tab||_rtab;
+  var g=document.getElementById('lrg');if(!g)return;g.innerHTML='';
+  var fl=_rtab==='all'?L:L.filter(function(r){return r.sentiment===_rtab;});
+  if(!fl.length){
+    g.innerHTML='<div style="color:var(--td);font-size:13px;padding:12px">此分類目前無評論記錄</div>';
+    return;
+  }
+  fl.forEach(function(r){
+    var c=document.createElement('div');
+    var cls=r.rating===1?'':r.rating===2?' r2':r.rating===3?' r3':r.rating===4?' r4':' r5';
+    c.className='lrcard'+cls;
+    var st='★'.repeat(r.rating)+'☆'.repeat(5-r.rating);
+    var pl=r.plate?'<span class="lrc-plate">'+r.plate+'</span>':'';
+    var sentLabel=r.sentiment==='negative'?
+      '<span class="lrc-sent neg">負面</span>':
+      '<span class="lrc-sent pos">正面</span>';
+    c.innerHTML='<div class="lrc-top">'+
+      '<span class="lrc-stars">'+st+'</span>'+pl+
+      '<span class="lrc-store" title="'+r.store+'">'+r.store+'</span>'+sentLabel+'</div>'+
+      '<div class="lrc-body">'+r.comment+'</div>';
+    g.appendChild(c);
+  });
+}
+function switchRevTab(tab,el){
+  document.querySelectorAll('.rev-tab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');rL(tab);
+}
+rL('all');
+
+
+/* Sec4: Warning stations */
+function rS(){
+  var g=document.getElementById('sg');g.innerHTML='';
+  var ws=S.filter(function(s){return s.color==='yellow'||s.color==='red';});
+  if(!ws.length){g.innerHTML='<div style="color:var(--g);font-size:13px">本期所有站點均達優質標準 🎉</div>';return;}
+  ws.forEach(function(s){
+    var c=document.createElement('div');c.className='scard';
+    var ac=s.color==='yellow'?'var(--y)':'var(--r)';
+    var bw=(s.avg/5*100).toFixed(1);
+    var fc=s.flash?' flash':'';
+    var fb=s.flash?'<span class="abadge">⚠ 閃爍警示</span>':'';
+    c.innerHTML='<div class="tl '+s.color+fc+'"></div>'+
+      '<div style="flex:1;min-width:0"><div class="sn" title="'+s.name+'">'+s.name+'</div>'+
+      '<div class="sbg"><div class="sfill" style="width:'+bw+'%;background:'+ac+'"></div></div></div>'+
+      '<div style="text-align:right;flex-shrink:0">'+
+        '<div class="savg" style="color:'+ac+'">'+s.avg.toFixed(2)+'</div>'+
+        '<div class="scnt">'+s.count+' 評</div></div>'+fb;
+    g.appendChild(c);
+  });
+}
+rS();
+
+/* Sec5: VQI table */
+function vc(v){return v>=80?'var(--r)':(v>=50?'var(--o)':(v>=30?'var(--y)':'var(--tl)'));}
+function rV(){
+  var tb=document.getElementById('vb');
+  V.forEach(function(v,i){
+    var col=vc(v.vqi);
+    var rc=i<3?'var(--r)':(i<8?'var(--o)':'var(--td)');
+    var kh=v.hw_keywords.map(function(k){return'<span class="vkc">'+k+'</span>';}).join('');
+    var r=document.createElement('tr');
+    r.innerHTML='<td style="color:'+rc+';font-weight:700">'+(i+1)+'</td>'+
+      '<td><span class="vpl">'+v.plate+'</span></td>'+
+      '<td><div class="vbw"><div class="vbbg"><div class="vbfill" style="width:'+v.vqi+'%;background:'+col+'"></div></div>'+
+      '<div class="vpct" style="color:'+col+'">'+v.vqi+'%</div></div></td>'+
+      '<td style="color:var(--td)">'+v.neg_hw+' / '+v.total+'</td>'+
+      '<td><div class="vkl">'+(kh||'—')+'</div></td>'+
+      '<td><button class="ebtn" onclick="tc('+i+')">💬 評論</button></td>';
+    tb.appendChild(r);
+    var cr=document.createElement('tr');cr.id='cr'+i;cr.className='cr';
+    var ch=v.comments.map(function(c){
+      var st='★'.repeat(c.rating)+'☆'.repeat(Math.max(0,5-c.rating));
+      return'<div class="ci"><div class="cst">'+st+'</div>'+
+        '<div><div style="font-size:11px;color:var(--td);margin-bottom:3px">'+c.store+'</div>'+
+        '<div class="ctxt">'+c.comment+'</div></div></div>';
+    }).join('');
+    cr.innerHTML='<td colspan="6"><div class="cb">'+ch+'</div></td>';
+    tb.appendChild(cr);
+  });
+}
+function tc(i){document.getElementById('cr'+i).classList.toggle('open');}
+rV();
+
+/* Sec6: Model table */
+function rM(){
+  var tb=document.getElementById('mb');if(!tb)return;tb.innerHTML='';
+  if(!M.length){tb.innerHTML='<tr><td colspan="4" style="color:var(--td);text-align:center">資料不足（需 10 筆以上）</td></tr>';return;}
+  M.forEach(function(m,i){
+    var ac=m.color==='green'?'var(--g)':(m.color==='yellow'?'var(--y)':'var(--r)');
+    var bw=(m.avg/5*100).toFixed(1);
+    var r=document.createElement('tr');
+    r.innerHTML='<td style="font-weight:700;color:var(--td)">'+(i+1)+'</td>'+
+      '<td style="font-weight:600">'+m.model+'</td>'+
+      '<td><div class="vbw"><div class="vbbg">'+
+        '<div class="vbfill" style="width:'+bw+'%;background:'+ac+'"></div></div>'+
+        '<div class="mavg" style="color:'+ac+'">'+m.avg.toFixed(2)+'</div></div></td>'+
+      '<td style="color:var(--td)">'+m.count+' 筆</td>';
+    tb.appendChild(r);
+  });
+}
+rM();
+
+/* Trend table */
+function rW(){
+  var tb=document.getElementById('wt');if(!tb)return;
+  var metrics=[
+    {key:'avg_rating',    label:'平均星等',   fmt:function(v){return v.toFixed(2)+'★';}, hi:true},
+    {key:'complaint_rate',label:'客訴率',      fmt:function(v){return v.toFixed(1)+'%';}, hi:false, threshold:2.0},
+    {key:'total_orders',  label:'完成訂單',   fmt:function(v){return v.toLocaleString()+'單';}, hi:true},
+    {key:'complaint_count',label:'客訴事件',   fmt:function(v){return v+'件';}, hi:false},
+    {key:'red_stations',  label:'紅色警示站', fmt:function(v){return v+'站';}, hi:false},
+  ];
+  metrics.forEach(function(m){
+    var tr=document.createElement('tr');
+    var td0=document.createElement('td');td0.textContent=m.label;tr.appendChild(td0);
+    W.forEach(function(w,i){
+      var td=document.createElement('td');
+      if(w.is_current)td.className='cur';
+      var v=w[m.key];
+      var txt=m.fmt(v);
+      // Trend arrow vs previous week
+      var arrow='';
+      if(i>0){
+        var prev=W[i-1][m.key];
+        if(v>prev)arrow=m.hi?'<span class="trend-up">▲</span>':'<span class="trend-dn">▲</span>';
+        else if(v<prev)arrow=m.hi?'<span class="trend-dn">▼</span>':'<span class="trend-up">▼</span>';
+        else arrow='<span class="trend-eq">→</span>';
+      }
+      // Complaint rate coloring
+      if(m.key==='complaint_rate'){
+        var cls=v>2?'complaint-bad':'complaint-ok';
+        td.innerHTML='<span class="'+cls+'">'+txt+'</span>'+arrow;
+      } else {
+        td.innerHTML=txt+arrow;
+      }
+      tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+}
+rW();
+
+/* Complaint Category Matrix */
+function toggleCat(el){el.classList.toggle('open');}
+function rCM(){
+  var wrap=document.getElementById('cat-matrix');
+  if(!wrap)return;
+  if(!CM||!CM.length){
+    wrap.innerHTML='<p style="color:var(--td);font-size:13px">本週無客訴分類資料（AI 未啟用或無負面評論）</p>';
+    return;
+  }
+  var COLORS=['#EF5350','#FF9100','#4ECDC4','#0099CC','#7E57C2','#26A69A','#EC407A','#78909C','#90A4AE'];
+  CM.forEach(function(d,idx){
+    var pct=d.current_pct;
+    var barColor=pct>=30?'#EF5350':(pct>=15?'#FF9100':'#4ECDC4');
+    // trend cells
+    var trendHtml='';
+    for(var wi=0;wi<4;wi++){
+      var wlabel=WL[wi]||('W'+(wi+1));
+      var isCur=(wi===3);
+      trendHtml+='<div class="cm-tw'+(isCur?' cur':'')+'">'+
+        wlabel+'<br><b>'+d.pcts[wi]+'%</b><br>'+d.counts[wi]+'件</div>';
+    }
+    // detail: current week (W4) only
+    var detailHtml='';
+    var curRevs=d.reviews[3]||[];
+    if(curRevs.length){
+      curRevs.forEach(function(r){
+        detailHtml+='<div class="cm-item">'+
+          '<div class="cm-plate">'+(r.plate||'—')+'</div>'+
+          '<div class="cm-store">'+(r.store||'—')+'</div>'+
+          '<div class="cm-cmt">'+r.comment+'</div>'+
+        '</div>';
+      });
+    }
+    if(!detailHtml)detailHtml='<div class="cm-empty">本週無此類評論</div>';
+    var row=document.createElement('div');
+    row.className='cm-row';
+    row.innerHTML=
+      '<div class="cm-hdr" onclick="toggleCat(this.parentNode)">'+
+        '<div class="cm-name">'+d.cat+'</div>'+
+        '<div class="cm-bar-area">'+
+          '<div class="cm-bar-track"><div class="cm-bar-fill" style="width:'+pct+'%;background:'+barColor+'"></div></div>'+
+          '<div class="cm-pct-label" style="color:'+barColor+'">'+pct+'%　'+d.current_count+'件</div>'+
+        '</div>'+
+        '<div class="cm-trend">'+trendHtml+'</div>'+
+        '<div class="cm-toggle">▼</div>'+
+      '</div>'+
+      '<div class="cm-detail">'+detailHtml+'</div>';
+    wrap.appendChild(row);
+  });
+}
+rCM();
+</script>
 </body>
 </html>
