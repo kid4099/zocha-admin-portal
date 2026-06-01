@@ -1,56 +1,50 @@
 {
-  "date": "2026-05-25",
+  "date": "2026-06-01",
   "categories": {
     "travel": [
-      {"title": "旅遊推薦清單》七款觀光列車帶你優雅遊台灣", "url": "https://club.commonhealth.com.tw/article/4614", "source": "大人社團", "time": "3 天前"},
-      {"title": "2026觀光署最新旅遊補助！符合資格「每人可領3200元」，5筆錢發放時間金額、加碼縣市一次看", "url": "https://www.storm.mg/lifestyle/11132778", "source": "風傳媒", "time": "4 天前"},
-      {"title": "台北新酒店20間推介人均$165！近台北車站／家庭房／日式大浴場", "url": "https://www.hk01.com/%E6%97%85%E9%81%8A/867120", "source": "HK01", "time": "5 天前"},
-      {"title": "迎端午玩水趣！台中水域系列活動5/23-6/13登場 邀市民清涼一夏", "url": "https://www.taichung.gov.tw/1287021/1287042/nodeCp?nodeId=3282126", "source": "台中市政府", "time": "2 天前"},
-      {"title": "2026國旅補助》最高補助3200元怎麼拿？五大補助申請一次看！", "url": "https://www.cardu.com.tw/epoint/detail.php?60088", "source": "CARDU", "time": "2 天前"}
+      {"title": "2027台灣連假怎麼請假最划算？請3休12攻略＋日韓港泰越南5國旅遊時間對照整理", "url": "https://www.funliday.com/posts/2027-taiwan-holiday/", "source": "Funliday", "time": "5 天前"},
+      {"title": "2026 全台清水模旅宿推薦 Top 10 屏東灣臥入選世界百大建築", "url": "https://www.travelerluxe.com/article/desc/260012667", "source": "Traveler Luxe", "time": "12 小時前"},
+      {"title": "3大連假、會展、演唱會帶動 觀光飯店業Q2淡季不淡", "url": "https://stock.ltn.com.tw/article/z3hgg1aqxcpb", "source": "自由時報", "time": "23 小時前"},
+      {"title": "會考結束迎學生出遊潮 臺南景點祭門票住宿優惠", "url": "https://news.immigration.gov.tw/NewsSection/Detail/0f5965cf-0b99-4e50-832a-731db7d774d5?lang=TW", "source": "新住民全球新聞網", "time": "6 天前"},
+      {"title": "國旅創高不等於飯店好賺 住宿業轉向三大新戰場", "url": "https://www.peoplenews.tw/articles/economic-news/34450", "source": "民報", "time": "2 天前"}
     ],
     "subsidy": [
-      {"title": "交通部觀光署再赴大馬行銷台灣 雙城接力搶攻旅遊商機、網紅助攻掀熱潮", "url": "https://www.yesmedia.com.tw/", "source": "Yes Media", "time": "4 天前"},
-      {"title": "中市赴東京推廣觀光成果豐碩 民宿業者正式簽署MOU", "url": "https://www.tourism.taichung.gov.tw/3280305/post", "source": "台中市觀光旅遊局", "time": "5 天前"},
-      {"title": "2026最新國旅補助！1縣市加碼「最高10000元紅包」全國都能領，全台發放金額/申請資格方式", "url": "https://www.storm.mg/lifestyle/11130035", "source": "風傳媒", "time": "5 天前"},
-      {"title": "2026國旅補助》最高補助3200元怎麼拿？五大補助申請一次看！", "url": "https://www.cardu.com.tw/epoint/detail.php?60088", "source": "CARDU", "time": "2 天前"},
-      {"title": "嘉市國旅補助不到1個月額滿結束 帶動YouBike衝破千萬人次創紀錄", "url": "https://udn.com/news/story/7326/9518570", "source": "聯合新聞網", "time": "3 天前"}
+      {"title": "2026觀光局最新旅遊補助！符合資格「領10000元大紅包」、26家遊樂園免費玩，交通部/各縣市加碼優惠", "url": "https://www.storm.mg/lifestyle/11137025", "source": "風傳媒", "time": "1 小時前"},
+      {"title": "泰國觀光局（TAT）支持曼谷雙年展，推動提升曼谷於全球藝術界的影響力", "url": "https://www.tattpe.org.tw/News/Info.html?id=1046", "source": "TAT 泰國觀光局", "time": "2 天前"},
+      {"title": "臺南市政府觀光旅遊局採訪通知「2026虎頭埤水與綠-黃金花雨健走」", "url": "https://www.twtainan.net/zh-tw/event/newsdetail/7907/", "source": "台南市觀光旅遊局", "time": "5 天前"},
+      {"title": "超人氣山城魅力！台灣旅遊大賞票選揭曉「台中國際花毯節」勝出", "url": "https://www.tourism.taichung.gov.tw/3285782/post", "source": "台中市觀光旅遊局", "time": "4 天前"},
+      {"title": "北寮風景區 即時影像（澎湖國家風景區管理處）", "url": "https://www.taiwan.net.tw/m1.aspx?sNo=0042331&uid=30120&keystring=", "source": "Taiwan.net", "time": "2 天前"}
     ],
-    "motorcycle": [
-      {"title": "機車族乖乖待轉也傷荷包？忽略「致命細節」被罰1800元", "url": "https://tw.news.yahoo.com/", "source": "Yahoo 新聞", "time": "23 小時前"},
-      {"title": "縮減路幅 南市道182線 機車族怨「壓迫」", "url": "https://udn.com/news/story/7326/9520320", "source": "聯合新聞網", "time": "2 天前"},
-      {"title": "機車族注意！待轉壓斑馬線視同違規 撞傷行人最重吊銷駕照", "url": "https://tyenews.com/2026/05/1361975/", "source": "桃園電子報", "time": "17 小時前"},
-      {"title": "一堆機車族都會犯！依規待轉忽略1細節 照收1800元罰單", "url": "https://www.chinatimes.com/realtimenews/20260523002785-260405", "source": "中時新聞網", "time": "1 天前"},
-      {"title": "機車族注意囉！依規定待轉忽略「一細節」 荷包秒噴1800", "url": "https://www.ctwant.com/amp/article/482468/", "source": "CTWANT", "time": "17 小時前"}
-    ],
+    "motorcycle": [],
     "arts": [
-      {"title": "2026演唱會全攻略！演唱會時間表、搶票資訊、票價總整理（持續更新）", "url": "https://www.businessweekly.com.tw/style/blog/3019879", "source": "商業周刊", "time": "2 天前"},
-      {"title": "2026台灣演唱會全攻略！詳細搶票資訊、開唱時間表以及票價總整理", "url": "https://www.gvm.com.tw/article/125822", "source": "遠見雜誌", "time": "2 天前"},
-      {"title": "2026演唱會懶人包！五月天、EXO、BTS先後在台開唱", "url": "https://www.businesstoday.com.tw/article/category/183030/post/202601290034/", "source": "今周刊", "time": "2 天前"},
-      {"title": "2026韓女團、女歌手台灣演唱會資訊！孝琳、EXID、aespa、BABYMONSTER…不斷更新", "url": "https://tw.news.yahoo.com/", "source": "Yahoo 新聞", "time": "4 天前"},
-      {"title": "5/23-5/24週末活動推薦！全台市集、音樂節懶人包：時間、地點、必逛亮點一次看", "url": "https://www.harpersbazaar.com/tw/life/trips/a71368640/523-524-fun-things-to-do-this-weekend/", "source": "Harper's Bazaar", "time": "2 天前"}
+      {"title": "「2026 音樂祭」推薦：《赤聲躁動》電音轟炸聽團迷、《春浪音樂節》露營控必參加！", "url": "https://www.gq.com.tw/article/2026%E9%9F%B3%E6%A8%82%E7%A5%AD", "source": "GQ Taiwan", "time": "3 天前"},
+      {"title": "2026演唱會全攻略！演唱會時間表、搶票資訊、票價總整理", "url": "https://www.businessweekly.com.tw/style/blog/3019879", "source": "商業周刊", "time": "6 天前"},
+      {"title": "2026演唱會一覽｜BTS、AAA、DK勝寛全在高雄開唱！演唱會時間、票價、座位圖一覽", "url": "https://www.vogue.com.tw/article/concerts-in-taiwan-2026", "source": "Vogue Taiwan", "time": "3 天前"},
+      {"title": "2026月光．海音樂會「身即海洋」場次日期與表演名單－大地藝術節", "url": "https://www.eastcoast-nsa.gov.tw/go/y5eVDMbE", "source": "東部海岸國家風景區", "time": "3 天前"},
+      {"title": "2026 J-pop在台演唱會盤點：YOASOBI、ONE OK ROCK、中島美嘉…大咖不間斷！", "url": "https://www.bella.tw/articles/music/55869/2026-jpop-concerts-in-taiwan", "source": "Bella", "time": "4 天前"}
     ],
     "brand": []
   },
   "trends": [
-    {"rank": 1, "keyword": "高鐵", "volume": 20000, "tag": "soc"},
-    {"rank": 2, "keyword": "家庭主婦 5000", "volume": 10000, "tag": "soc"},
-    {"rank": 3, "keyword": "喜樂島", "volume": 10000, "tag": "pol"},
-    {"rank": 4, "keyword": "陳文茜", "volume": 10000, "tag": "cel"},
-    {"rank": 5, "keyword": "人工智慧", "volume": 10000, "tag": "tec"},
-    {"rank": 6, "keyword": "快閃記憶體", "volume": 10000, "tag": "fin"},
-    {"rank": 7, "keyword": "馬刺對雷霆", "volume": 10000, "tag": "spo"},
-    {"rank": 8, "keyword": "鄭明典", "volume": 5000, "tag": "soc"},
-    {"rank": 9, "keyword": "decathlon", "volume": 5000, "tag": "gen"},
-    {"rank": 10, "keyword": "孫淑媚", "volume": 5000, "tag": "cel"},
-    {"rank": 11, "keyword": "全民健康保險", "volume": 2000, "tag": "soc"},
-    {"rank": 12, "keyword": "阿喜", "volume": 5000, "tag": "cel"},
-    {"rank": 13, "keyword": "群創", "volume": 10000, "tag": "fin"},
-    {"rank": 14, "keyword": "英業達", "volume": 5000, "tag": "fin"},
-    {"rank": 15, "keyword": "0050", "volume": 10000, "tag": "fin"},
-    {"rank": 16, "keyword": "陳匡怡", "volume": 2000, "tag": "cel"},
-    {"rank": 17, "keyword": "孫", "volume": 2000, "tag": "gen"},
-    {"rank": 18, "keyword": "樓梯", "volume": 1000, "tag": "gen"},
-    {"rank": 19, "keyword": "宏碁", "volume": 1000, "tag": "fin"},
-    {"rank": 20, "keyword": "美伊戰爭", "volume": 2000, "tag": "pol"}
+    {"rank": 1, "keyword": "yahoo", "volume": 10000, "tag": "tec"},
+    {"rank": 2, "keyword": "翻譯", "volume": 5000, "tag": "gen"},
+    {"rank": 3, "keyword": "2330 台積電", "volume": 2000, "tag": "fin"},
+    {"rank": 4, "keyword": "彩晶", "volume": 1000, "tag": "fin"},
+    {"rank": 5, "keyword": "Computex", "volume": 1000, "tag": "tec"},
+    {"rank": 6, "keyword": "辜公怡", "volume": 1000, "tag": "soc"},
+    {"rank": 7, "keyword": "00919 配息", "volume": 1000, "tag": "fin"},
+    {"rank": 8, "keyword": "2317 鴻海", "volume": 500, "tag": "fin"},
+    {"rank": 9, "keyword": "嵐", "volume": 1000, "tag": "cel"},
+    {"rank": 10, "keyword": "廣達", "volume": 500, "tag": "fin"},
+    {"rank": 11, "keyword": "Classroom", "volume": 1000, "tag": "tec"},
+    {"rank": 12, "keyword": "仁寶", "volume": 500, "tag": "fin"},
+    {"rank": 13, "keyword": "3481 群創", "volume": 2000, "tag": "fin"},
+    {"rank": 14, "keyword": "英業達", "volume": 200, "tag": "fin"},
+    {"rank": 15, "keyword": "6770 力積電", "volume": 200, "tag": "fin"},
+    {"rank": 16, "keyword": "2303 聯電", "volume": 200, "tag": "fin"},
+    {"rank": 17, "keyword": "夏季電費", "volume": 200, "tag": "soc"},
+    {"rank": 18, "keyword": "JCB", "volume": 200, "tag": "fin"},
+    {"rank": 19, "keyword": "台化", "volume": 100, "tag": "fin"},
+    {"rank": 20, "keyword": "2344 華邦電", "volume": 200, "tag": "fin"}
   ]
 }
